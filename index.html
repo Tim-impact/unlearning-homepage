@@ -190,12 +190,12 @@ const CONTENT = {
 
   // ④ 임팩트 섹션
   impact: {
-    headingLine1: "우리가 시스템을 바꿀 때,",
-    headingLine2: "이만큼 달라집니다",           // 하늘색
+    headingLine1: "우리가 일하는 방식이",
+    headingLine2: "사회에 만드는 변화",           // 하늘색
     cards: [
-      { num: "10,400", unit: "시간 확보",  title: "중요한 일에 쓸 수 있는 시간이 늘어납니다",  desc: "10개의 조직이 우리와 함께한다면, 1년 동안 세상을 바꾸는 핵심 업무에 10,400시간을 더 사용할 수 있습니다. (조직당 주 20시간 절약 기준)" },
-      { num: "N",     unit: "명 청년 투입", title: "진짜 청년 일자리 창출",   desc: "AI 도구를 다룰 줄 알지만 실전 경험이 필요한 청년 N명 이상에게, 진짜 현장에서 일하며 성장할 수 있는 기회를 제공합니다." },
-      { num: "66",     unit: "% 재투자",   title: "수익의 대부분을 다시 사회에 씁니다",    desc: "우리가 벌어들인 이익의 3분의 2 이상은 약자를 돕는 기술을 연구하고, 청년들을 교육하는 데 다시 사용됩니다." },
+      { num: "시간",   unit: "", title: "조직이 핵심 업무에 집중할 시간",  desc: "워크플로우 개선으로 절감한 시간이, 세상을 바꾸는 핵심 업무에 다시 투입됩니다." },
+      { num: "성장",   unit: "", title: "AI 시대에 청년이 자라는 현장",    desc: "실전 경험이 필요한 청년들에게 현장에서 함께 성장할 기회를 제공합니다." },
+      { num: "선순환", unit: "", title: "수익을 다시 사회로",              desc: "우리의 수익은 약자를 돕는 기술 연구와 청년 교육에 다시 사용되어, 변화의 선순환을 만듭니다." },
     ],
   },
 
@@ -268,7 +268,7 @@ const CONTENT = {
   // ⑦ 푸터
   footer: {
     tagline: "세상을 바꾸는 사람들이 미션에만 몰입할 수 있도록,\n언러닝컴퍼니가 워크플로우 개선을 돕습니다.",
-    email: "hello@unlearning.co",
+    email: "hello@un-learning.co",
   },
 };
 
@@ -973,7 +973,7 @@ function ImpactSection() {
       <SectionLabel num="04" text="Social Impact" />
       <h2 style={{ fontFamily: SANS, fontSize: "clamp(28px, 5vw, 44px)", fontWeight: 700, color: C.textBright, lineHeight: 1.3, marginBottom: 48, wordBreak: "keep-all" }}>
         {CONTENT.impact.headingLine1}<br />
-        <span style={{ color: C.cyan }}>{CONTENT.impact.headingLine2}</span>합니다.
+        <span style={{ color: C.cyan }}>{CONTENT.impact.headingLine2}</span>
       </h2>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24 }} className="impact-grid">
         {impacts.map((imp, i) => (
@@ -982,7 +982,7 @@ function ImpactSection() {
             opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(24px)", transition: `all .5s ease ${i * 0.15}s`
           }}>
             <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: imp.color }} />
-            <div style={{ fontFamily: MONO, fontSize: 36, fontWeight: 700, color: imp.color, marginBottom: 8, letterSpacing: "-.02em" }}>
+            <div style={{ fontFamily: MONO, fontSize: 36, fontWeight: 700, color: imp.color, marginBottom: 8, letterSpacing: 0 }}>
               {imp.num}<span style={{ fontSize: 16, fontWeight: 400, marginLeft: 6 }}>{imp.unit}</span>
             </div>
             <h3 style={{ fontFamily: SANS, fontSize: 18, fontWeight: 700, color: C.textBright, marginBottom: 12 }}>{imp.title}</h3>
