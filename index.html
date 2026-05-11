@@ -136,13 +136,13 @@ const CONTENT = {
     tagline2: "조직의 워크플로우를 함께 다시 설계합니다",
     headingLine1: "세상을 바꾸는 일에만",
     headingLine2: "집중하세요",          // 초록색으로 표시되는 부분
-    subtext: "비효율적인 업무 흐름이 본질적인 일을 가로막고 있지 않나요?\n언러닝컴퍼니가 워크플로우를 함께 개선해 본질에 집중하도록 돕습니다.",
+    subtext: "비효율적인 업무들이 핵심 업무들을 가로막고 있지 않나요?\n언러닝컴퍼니가 워크플로우 개선을 도와 핵심 업무에 집중하도록 돕겠습니다.",
   },
 
   // ① 문제 섹션
   problem: {
-    headingLine1: "본질적인 일에 집중해야 하는데,",
-    headingLine2: "워크플로우가 발목을 잡고 있지 않나요?",
+    headingLine1: "핵심 업무에 집중해야 하는데,",
+    headingLine2: "비효율적인 업무들이 발목을 잡고 있지 않나요?",
     items: [
       {
         num: "01",
@@ -164,8 +164,8 @@ const CONTENT = {
 
   // ② 서비스 섹션
   services: {
-    headingLine1: "우리는 방법만 알려주고 떠나지 않습니다.",
-    headingLine2: "직접 일을 해결하는 파트너",   // 초록색
+    headingLine1: "방법만 알려주고 떠나지 않습니다.",
+    headingLine2: "일이 해결될 때까지 함께하는 파트너",   // 초록색
     subtext: "IT를 몰라도 됩니다. 언러닝컴퍼니가 세 가지 방식으로 조직의 워크플로우를 함께 개선합니다.",
     trackA: {
       title: "내부의 복잡한 일 줄이기",
@@ -184,7 +184,7 @@ const CONTENT = {
     },
     budgetBox: {
       heading: '"이 모든 과정을 진행하는데 비용이 많이 들지 않을까요?"',
-      desc: "걱정 마세요! 언러닝컴퍼니는 세 가지 경로를 연결해 고객 실부담을 최소화합니다. \n① 지자체 청년 일자리·DX 전환 지원금 ② 고용노동부 사회적기업 육성 예산 ③ 대기업 CSR·사회공헌 예산 컨소시엄\n어떤 경로가 맞는지 함께 찾아드립니다.",
+      desc: "걱정 마세요! 언러닝컴퍼니는 다양한 자원을 연결해 고객의 부담을 최소화합니다. \n정부 프로젝트, 대기업 CSR·사회공헌 예산 등 \n적절한 경로를 함께 찾아드립니다.",
     },
   },
 
@@ -261,13 +261,13 @@ const CONTENT = {
   // ⑥ 컨택 섹션
   contact: {
     headingLine1: "당신의 조직은 지금,",
-    headingLine2: "어떤 업무가 가장 힘드신가요?",  // 초록색
+    headingLine2: "어떤 도움이 가장 필요하신가요?",  // 초록색
     subtext: "\"회계 정산이 너무 오래 걸려요.\" \"지원금 결과 보고서 쓰느라 밤을 새워요.\"\n워크플로우의 병목 지점을 알려주세요. \n언러닝컴퍼니의 전문가가 직접 연락드려 본질적 업무에 집중할 수 있는 해결책을 제안해 드립니다.",
   },
 
   // ⑦ 푸터
   footer: {
-    tagline: "세상을 바꾸는 사람들이 미션에만 몰입할 수 있도록,\n언러닝컴퍼니가 복잡한 행정 업무를 대신 해결합니다.",
+    tagline: "세상을 바꾸는 사람들이 미션에만 몰입할 수 있도록,\n언러닝컴퍼니가 워크플로우 개선을 돕습니다.",
     email: "hello@unlearning.co",
   },
 };
@@ -1531,7 +1531,6 @@ function Footer() {
         </div>
         <div className="footer-contact" style={{ fontFamily: MONO, fontSize: 13, color: C.textDim, lineHeight: 1.8 }}>
           <div>{CONTENT.footer.email}</div>
-          <div>B2B2G / CSR Partnership</div>
         </div>
       </div>
       <div className="footer-bottom" style={{ maxWidth: 1000, margin: "60px auto 0", paddingTop: 24, borderTop: `1px dashed ${C.border}`, display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 12, fontFamily: MONO, fontSize: 11, color: C.textFaint }}>
