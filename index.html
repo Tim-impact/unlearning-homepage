@@ -112,13 +112,13 @@ const THEMES = {
   light: {
     name: "light",
     bg: "#ffffff", bgSoft: "#f6f8fa", bgCard: "#ffffff", bgHead: "#eef1f4",
-    text: "#1f2328", textBright: "#0a0a0a", textDim: "#57606a", textFaint: "#8c959f",
+    text: "#1f2328", textBright: "#0a0a0a", textDim: "#424a53", textFaint: "#5e666f",
     green: "#0d9f5c", orange: "#d65a26", red: "#d23a4a", purple: "#7c5cd6", cyan: "#0c89aa",
     border: "#d8dee4", borderBright: "#b7bec6",
     shadow: "0 18px 48px rgba(15, 23, 42, .10)",
     cardShadow: "0 1px 2px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05)",
     gridColor: "#7a8694",
-    gridMaskOpacity: 0.08,
+    gridMaskOpacity: 0.16,
     overlay: "rgba(255,255,255,.95)",
     overlayHeavy: "rgba(255,255,255,0.97)",
     backdrop: "rgba(15,23,42,.40)",
@@ -126,13 +126,13 @@ const THEMES = {
   dark: {
     name: "dark",
     bg: "#0a0a0a", bgSoft: "#111111", bgCard: "#0d1117", bgHead: "#161b22",
-    text: "#c9d1d9", textBright: "#f0f6fc", textDim: "#6e7681", textFaint: "#484f58",
+    text: "#c9d1d9", textBright: "#f0f6fc", textDim: "#9aa5b1", textFaint: "#76808b",
     green: "#00ff88", orange: "#ff6b35", red: "#ff4757", purple: "#a78bfa", cyan: "#22d3ee",
     border: "#21262d", borderBright: "#30363d",
     shadow: "0 24px 80px rgba(0,0,0,.6)",
     cardShadow: "none",
     gridColor: "#00ff88",
-    gridMaskOpacity: 0.04,
+    gridMaskOpacity: 0.08,
     overlay: "rgba(10,10,10,.95)",
     overlayHeavy: "rgba(10,10,10,0.97)",
     backdrop: "rgba(0,0,0,.55)",
@@ -856,31 +856,37 @@ function HeroSection() {
   return (
     <section id="home" style={{
       minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-      padding: "120px 20px 60px", position: "relative",
+      padding: "clamp(88px, 13vh, 120px) 20px clamp(40px, 7vh, 60px)", position: "relative",
     }}>
       <div style={{
         position: "absolute", inset: 0, opacity: C.gridMaskOpacity,
         backgroundImage: `linear-gradient(${C.gridColor} 1px, transparent 1px), linear-gradient(90deg, ${C.gridColor} 1px, transparent 1px)`,
-        backgroundSize: "48px 48px", maskImage: "radial-gradient(ellipse at center, black 30%, transparent 75%)", WebkitMaskImage: "radial-gradient(ellipse at center, black 30%, transparent 75%)",
+        backgroundSize: "48px 48px", maskImage: "radial-gradient(ellipse at center, black 45%, transparent 90%)", WebkitMaskImage: "radial-gradient(ellipse at center, black 45%, transparent 90%)",
+      }} />
+      <div style={{
+        position: "absolute", top: "40%", left: "50%", transform: "translate(-50%, -50%)",
+        width: "min(1200px, 92vw)", height: 560, zIndex: 0, pointerEvents: "none",
+        background: `radial-gradient(ellipse at center, ${C.green}14 0%, transparent 70%)`,
+        filter: "blur(36px)",
       }} />
 
       <div style={{
-        textAlign: "center", animation: "fadeInUp 0.8s ease both", marginBottom: 40, zIndex: 1
+        textAlign: "center", animation: "fadeInUp 0.8s ease both", marginBottom: "clamp(20px, 4vh, 40px)", zIndex: 1
       }}>
         <div style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", gap: 4, marginBottom: 24, padding: "10px 20px", border: `1px solid ${C.green}44`, borderRadius: 8, background: `${C.green}08` }}>
           <span style={{ fontFamily: SANS, fontSize: 14, fontWeight: 500, color: C.green, letterSpacing: ".01em" }}>{CONTENT.hero.tagline1}</span>
           <span style={{ fontFamily: SANS, fontSize: 13, fontWeight: 300, color: C.textDim, letterSpacing: ".01em" }}>— {CONTENT.hero.tagline2}</span>
         </div>
-        <h1 style={{ fontFamily: SANS, fontSize: "clamp(32px, 6vw, 56px)", fontWeight: 900, lineHeight: 1.25, color: C.textBright, letterSpacing: "-.02em", wordBreak: "keep-all", maxWidth: 900, margin: "0 auto" }}>
+        <h1 style={{ fontFamily: SANS, fontSize: "clamp(30px, min(6vw, 8.2vh), 72px)", fontWeight: 900, lineHeight: 1.2, color: C.textBright, letterSpacing: "-.02em", wordBreak: "keep-all", maxWidth: 1000, margin: "0 auto" }}>
           {CONTENT.hero.headingLine1}<br />
           <span style={{ color: C.green }}>{CONTENT.hero.headingLine2}</span>
         </h1>
-        <p style={{ fontFamily: SANS, fontSize: "clamp(16px, 2vw, 20px)", fontWeight: 400, color: C.textDim, marginTop: 20, lineHeight: 1.85, wordBreak: "keep-all", maxWidth: 680, margin: "20px auto 0", whiteSpace: "pre-line" }}>
+        <p style={{ fontFamily: SANS, fontSize: "clamp(15px, min(2vw, 2.7vh), 24px)", fontWeight: 400, color: C.textDim, marginTop: 24, lineHeight: 1.8, wordBreak: "keep-all", maxWidth: 780, margin: "clamp(14px, 2.5vh, 24px) auto 0", whiteSpace: "pre-line" }}>
           {CONTENT.hero.subtext}
         </p>
       </div>
 
-      <div style={{ background: C.bgSoft, border: `1px solid ${C.border}`, borderRadius: 10, overflow: "hidden", width: "100%", maxWidth: 680, boxShadow: C.shadow, zIndex: 1 }}>
+      <div style={{ background: C.bgSoft, border: `1px solid ${C.border}`, borderRadius: 10, overflow: "hidden", width: "100%", maxWidth: 820, boxShadow: C.shadow, zIndex: 1 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 16px", background: C.bgHead, borderBottom: `1px solid ${C.border}` }}>
           <span style={{ width: 11, height: 11, borderRadius: "50%", background: "#ff5f57" }} />
           <span style={{ width: 11, height: 11, borderRadius: "50%", background: "#febc2e" }} />
@@ -969,7 +975,7 @@ function WorkSection() {
   ];
 
   return (
-    <section id="work" ref={ref} style={{ padding: "120px 20px", background: `linear-gradient(180deg, ${C.bg} 0%, ${C.bgSoft} 50%, ${C.bg} 100%)`, borderTop: `1px solid ${C.border}` }}>
+    <section id="work" ref={ref} style={{ padding: "120px 20px", background: C.bg, borderTop: `1px solid ${C.border}` }}>
       <div style={{ maxWidth: 1000, margin: "0 auto" }}>
         <SectionLabel num="01" text="Work" />
         <h2 style={{ fontFamily: SANS, fontSize: "clamp(28px, 5vw, 44px)", fontWeight: 700, color: C.textBright, lineHeight: 1.3, marginBottom: 20, wordBreak: "keep-all" }}>
@@ -982,9 +988,12 @@ function WorkSection() {
 
         {tracks.map((t, idx) => (
           <div key={t.id} style={{
-            marginBottom: idx < tracks.length - 1 ? 64 : 48,
-            paddingTop: idx > 0 ? 56 : 0,
-            borderTop: idx > 0 ? `1px dashed ${C.border}` : "none",
+            background: C.bgSoft,
+            border: `1px solid ${C.border}`,
+            borderRadius: 16,
+            padding: "clamp(20px, 4vw, 36px)",
+            marginBottom: idx < tracks.length - 1 ? 28 : 0,
+            boxShadow: C.cardShadow,
             opacity: visible ? 1 : 0,
             transform: visible ? "translateY(0)" : "translateY(24px)",
             transition: `all .5s ease ${idx * 0.12}s`,
@@ -1007,7 +1016,7 @@ function WorkSection() {
                     </div>
                     <div style={{ fontFamily: SANS, fontSize: 16, fontWeight: 700, color: C.textBright, marginBottom: 2 }}>{s.label}</div>
                     <div style={{ fontFamily: MONO, fontSize: 12, color: C.textDim, marginBottom: 8 }}>{s.duration}</div>
-                    <div style={{ fontFamily: SANS, fontSize: 14, color: C.textDim, lineHeight: 1.6, whiteSpace: "pre-line" }}>{s.desc}</div>
+                    <div style={{ fontFamily: SANS, fontSize: 15, color: C.textDim, lineHeight: 1.6, whiteSpace: "pre-line" }}>{s.desc}</div>
                   </div>
                 ))}
               </div>
@@ -1063,7 +1072,7 @@ function CurriculumSection() {
               <span style={{ fontFamily: MONO, fontSize: 22, fontWeight: 700, color: mod.color, minWidth: 28 }}>{mod.id}</span>
               <div style={{ flex: 1 }}>
                 <div style={{ fontFamily: SANS, fontSize: 17, fontWeight: 700, color: C.textBright, marginBottom: 4, wordBreak: "keep-all" }}>{mod.title}</div>
-                <div style={{ fontFamily: SANS, fontSize: 13, color: C.textDim }}>{mod.tagline}</div>
+                <div style={{ fontFamily: SANS, fontSize: 15, color: C.textDim }}>{mod.tagline}</div>
               </div>
               <span style={{ fontFamily: MONO, fontSize: 11, color: mod.color, background: mod.color + "15", border: `1px solid ${mod.color}44`, padding: "4px 10px", borderRadius: 4, whiteSpace: "nowrap" }}>{mod.items.length}개 세션</span>
               <span style={{ color: C.textDim, fontSize: 13, marginLeft: 8, display: "inline-block", transform: openModule === mod.id ? "rotate(180deg)" : "none", transition: "transform .2s" }}>▼</span>
@@ -1078,7 +1087,7 @@ function CurriculumSection() {
                       <span style={{ fontFamily: MONO, fontSize: 11, color: C.textDim, background: C.bgCard, border: `1px solid ${C.border}`, padding: "2px 8px", borderRadius: 3, whiteSpace: "nowrap", marginLeft: 8 }}>⏱ {item.duration}</span>
                     </div>
                     <div style={{ fontFamily: SANS, fontSize: 15, fontWeight: 700, color: C.textBright, marginBottom: 6, wordBreak: "keep-all" }}>{item.title}</div>
-                    <div style={{ fontFamily: SANS, fontSize: 13, color: C.textDim, lineHeight: 1.6, wordBreak: "keep-all" }}>{item.desc}</div>
+                    <div style={{ fontFamily: SANS, fontSize: 15, color: C.textDim, lineHeight: 1.6, wordBreak: "keep-all" }}>{item.desc}</div>
                   </div>
                 ))}
               </div>
@@ -1146,7 +1155,7 @@ function RecommendedTracksSection({ setView, openContact }) {
                 ))}
               </div>
 
-              <p style={{ fontFamily: SANS, fontSize: 14, color: C.textDim, lineHeight: 1.6, marginBottom: 16, wordBreak: "keep-all" }}>{track.desc}</p>
+              <p style={{ fontFamily: SANS, fontSize: 15, color: C.textDim, lineHeight: 1.6, marginBottom: 16, wordBreak: "keep-all" }}>{track.desc}</p>
 
               <div style={{ fontFamily: MONO, fontSize: 11, color: C.textFaint }}>for: {track.forWho}</div>
             </div>
@@ -1299,7 +1308,7 @@ function TeamCards({ visible }) {
               <div style={{ fontFamily: SANS, fontSize: 21, fontWeight: 900, color: C.textBright, marginBottom: 4 }}>{member.name}</div>
               <div style={{ fontFamily: MONO, fontSize: 12, color: C.orange, letterSpacing: ".05em" }}>{member.role}</div>
             </div>
-            <p style={{ fontFamily: SANS, fontSize: 14, fontWeight: 400, color: C.textDim, lineHeight: 1.6, marginBottom: 20, fontStyle: "italic", textAlign: "center", wordBreak: "keep-all" }}>"{member.quote}"</p>
+            <p style={{ fontFamily: SANS, fontSize: 15, fontWeight: 400, color: C.textDim, lineHeight: 1.6, marginBottom: 20, fontStyle: "italic", textAlign: "center", wordBreak: "keep-all" }}>"{member.quote}"</p>
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               {member.tags.map(tag => (
                 <span key={tag} style={{ fontFamily: SANS, fontSize: 14, color: C.textDim, background: C.bgSoft, border: `1px solid ${C.border}`, borderRadius: 4, padding: "5px 10px", wordBreak: "keep-all" }}>
@@ -1393,7 +1402,7 @@ function SampleNotice({ text }) {
   const C = useContext(ThemeContext);
   return (
     <div style={{
-      fontFamily: SANS, fontSize: 13, color: C.textDim,
+      fontFamily: SANS, fontSize: 15, color: C.textDim,
       padding: "10px 14px", marginBottom: 24, borderRadius: 6,
       background: C.bgSoft, border: `1px dashed ${C.border}`,
     }}>
@@ -1442,7 +1451,7 @@ function ReferenceCard({ item, setView, style }) {
         {isMedia && <span style={{ color: C.cyan, marginRight: 6 }}>↗</span>}
         "{item.title}"
       </h3>
-      <p style={{ fontFamily: SANS, fontSize: 14, color: C.textDim, lineHeight: 1.65, margin: 0, wordBreak: "keep-all" }}>
+      <p style={{ fontFamily: SANS, fontSize: 15, color: C.textDim, lineHeight: 1.65, margin: 0, wordBreak: "keep-all" }}>
         {item.summary}
       </p>
       {item.tags && item.tags.length > 0 && (
@@ -1496,7 +1505,7 @@ function MediaMentionRow({ mention }) {
           {mention.outlet} · {mention.date}
           {mention.isSample && <span style={{ marginLeft: 8, color: C.textFaint }}>·sample</span>}
         </div>
-        <div style={{ fontFamily: SANS, fontSize: 14, color: C.textBright, lineHeight: 1.5, wordBreak: "keep-all" }}>
+        <div style={{ fontFamily: SANS, fontSize: 15, color: C.textBright, lineHeight: 1.5, wordBreak: "keep-all" }}>
           {mention.headline}
         </div>
       </div>
@@ -1662,7 +1671,7 @@ function ReferencesListView({ setView }) {
         </div>
 
         {filtered.length === 0 ? (
-          <div style={{ textAlign: "center", padding: "80px 0", fontFamily: SANS, fontSize: 14, color: C.textDim }}>
+          <div style={{ textAlign: "center", padding: "80px 0", fontFamily: SANS, fontSize: 15, color: C.textDim }}>
             해당 조건의 사례가 없습니다.
           </div>
         ) : (
@@ -1947,7 +1956,7 @@ function ContactModal({ open, onClose }) {
               <textarea id="contact-message" name="message" required aria-required="true" placeholder="예: 영수증 풀칠과 엑셀 정산 때문에 본업을 할 시간이 없습니다." rows={3} style={{ width: "100%", padding: "13px 16px", background: C.bgSoft, border: `1px solid ${C.border}`, borderRadius: 6, color: C.textBright, fontFamily: SANS, fontSize: 16, outline: "none", resize: "vertical" }} />
             </div>
             <div style={{ background: `${C.green}08`, border: `1px solid ${C.border}`, borderRadius: 6, padding: "16px" }}>
-              <p style={{ fontFamily: SANS, fontSize: 14, color: C.textDim, lineHeight: 1.7, marginBottom: 12 }}>
+              <p style={{ fontFamily: SANS, fontSize: 15, color: C.textDim, lineHeight: 1.7, marginBottom: 12 }}>
                 회사는 문의 처리를 위해 단체명/기업명, 담당자 전화번호, 담당자 이메일, 상담 내용을 수집하며, 상담 완료 후 3년간 보유합니다.{" "}
                 <button type="button" onClick={() => setPrivacyOpen(true)} style={{ background: "none", border: "none", color: C.green, fontFamily: SANS, fontSize: 14, cursor: "pointer", textDecoration: "underline", padding: 0 }}>
                   개인정보 처리방침 전문 보기 →
@@ -2064,7 +2073,7 @@ function NewsCard({ post, setView }) {
         <h3 style={{ fontFamily: SANS, fontSize: 18, fontWeight: 700, color: C.textBright, marginBottom: 12, lineHeight: 1.4, wordBreak: "keep-all" }}>
           {post.title}
         </h3>
-        <p style={{ fontFamily: SANS, fontSize: 14, fontWeight: 300, color: C.textDim, lineHeight: 1.6, display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+        <p style={{ fontFamily: SANS, fontSize: 15, fontWeight: 300, color: C.textDim, lineHeight: 1.6, display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
           {getSummary(post.body)}
         </p>
       </div>
