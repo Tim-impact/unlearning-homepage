@@ -27,6 +27,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <style>
     /* 헤드 카피용 — Paperlogy (사용 굵기: Regular 400, Bold 700, Black 900) */
     @font-face { font-family: "Paperlogy"; font-weight: 400; font-style: normal; font-display: swap; src: url("assets/fonts/Paperlogy-4Regular.ttf") format("truetype"); }
@@ -107,6 +108,41 @@
     .hover-green:hover { color: #00ff88 !important; }
     .btn-submit { transition: opacity .2s; }
     .btn-submit:hover { opacity: 0.8; }
+
+    /* 성장 궤도 — 조직(행성)을 공전하는 로켓 애니메이션 */
+    @keyframes orbit-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.045); } }
+    .orbit-planet { animation: orbit-breathe 6s ease-in-out infinite; transform-origin: 280px 280px; transform-box: view-box; }
+    @keyframes orbit-wp-pulse { 0%, 100% { opacity: .5; } 6%, 14% { opacity: 1; } }
+    .orbit-wp { animation: orbit-wp-pulse 16s ease-in-out infinite; }
+    @keyframes orbit-wp-ring { 0% { opacity: 0; transform: scale(.5); } 7% { opacity: .8; transform: scale(1); } 22% { opacity: 0; transform: scale(1.9); } 100% { opacity: 0; } }
+    .orbit-wp-ring { animation: orbit-wp-ring 16s ease-out infinite; transform-box: fill-box; transform-origin: center; }
+    @keyframes orbit-rise { 0% { opacity: 0; transform: translateY(4px); } 25% { opacity: .85; } 100% { opacity: 0; transform: translateY(-46px); } }
+    .orbit-particle { animation: orbit-rise 3.6s ease-in infinite; transform-box: fill-box; transform-origin: center; }
+    @keyframes rocket-flame { 0%, 100% { opacity: .95; transform: scaleX(1); } 50% { opacity: .5; transform: scaleX(.55); } }
+    .rocket-flame { animation: rocket-flame .22s linear infinite; transform-box: fill-box; transform-origin: right center; }
+    @keyframes globe-glow { 0%, 100% { opacity: .05; } 50% { opacity: .12; } }
+    .globe-glow { animation: globe-glow 5s ease-in-out infinite; }
+    @keyframes globe-city { 0%, 100% { opacity: .25; } 50% { opacity: 1; } }
+    .globe-city { animation: globe-city 2.4s ease-in-out infinite; }
+
+    /* 풀블리드 다크 히어로 밴드 (Wise/osmo/dope 풍) */
+    .work-hero-band { position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; width: 100vw; background: radial-gradient(120% 120% at 50% 0%, #0b1020 0%, #06080e 60%); overflow: hidden; }
+    .hero-grid { position: absolute; inset: 0; background-image: radial-gradient(circle, rgba(255,255,255,.06) 1px, transparent 1px); background-size: 30px 30px; -webkit-mask-image: radial-gradient(ellipse 75% 80% at 50% 45%, #000 35%, transparent 78%); mask-image: radial-gradient(ellipse 75% 80% at 50% 45%, #000 35%, transparent 78%); pointer-events: none; }
+    .aurora { position: absolute; border-radius: 50%; filter: blur(72px); opacity: .42; pointer-events: none; will-change: transform; }
+    .aurora-1 { width: 560px; height: 560px; background: radial-gradient(circle, #00ff88, transparent 68%); top: -160px; left: 6%; animation: aurora-1 19s ease-in-out infinite; }
+    .aurora-2 { width: 520px; height: 520px; background: radial-gradient(circle, #22d3ee, transparent 68%); bottom: -200px; right: 8%; animation: aurora-2 23s ease-in-out infinite; }
+    .aurora-3 { width: 460px; height: 460px; background: radial-gradient(circle, #2563eb, transparent 70%); top: 10%; right: 32%; animation: aurora-3 27s ease-in-out infinite; }
+    @keyframes aurora-1 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(70px,50px) scale(1.18); } }
+    @keyframes aurora-2 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-60px,-40px) scale(1.12); } }
+    @keyframes aurora-3 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(40px,-50px) scale(1.22); } }
+    @media (prefers-reduced-motion: reduce) { .orbit-planet, .orbit-wp, .orbit-wp-ring, .orbit-particle, .rocket-flame, .globe-glow, .globe-city, .aurora { animation: none; } }
+
+    /* Work — 1단: 애니메이션 / 2단: 터미널 카드 4개 한 줄 */
+    .work-stage-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .stage-card { transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease; }
+    .stage-card:hover { transform: translateY(-4px) !important; }
+    @media (max-width: 1080px) { .work-stage-grid { grid-template-columns: repeat(2, 1fr) !important; } }
+    @media (max-width: 560px) { .work-stage-grid { grid-template-columns: 1fr !important; } }
   </style>
 </head>
 <body>
@@ -184,8 +220,8 @@ const CONTENT = {
 
   // ① 히어로 섹션 — 맨 처음 보이는 화면
   hero: {
-    tagline1: "임팩트 조직과 함께 일하는 언러닝컴퍼니",
-    tagline2: "행정에 묻혀 지친 워크플로우를 AI로 함께 바꿉니다.",
+    tagline1: "임팩트 프로젝트 에이전시 = 언러닝컴퍼니",
+    tagline2: "AI · 워크플로우 · 적정기술로 임팩트 조직의 협업을 혁신합니다",
     headingLine1: "세상을 바꾸는 일에만",
     headingLine2: "집중하세요",          // 초록색으로 표시되는 부분
   },
@@ -213,29 +249,36 @@ const CONTENT = {
     ],
   },
 
-  // ② 서비스 섹션
+  // ② 서비스 섹션 — 하나의 흐름(플라이휠): ① 입구 → ② 엔진 → ③ 남는 것 → ④ 확산 → 다시 ①
   work: {
-    headingLine1: "성장이 필요하지만 자원이 부족한 임팩트 조직의",
+    headingLine1: "성장을 위한 더 큰 도전을 함께 하는",
     headingLine2: "AX 오퍼레이션 파트너",   // 초록색
-    trackA: {
-      title: "낡은 업무방식 비우기",
-      subtitle: "우리 조직에 맞는 AI 시스템을 함께 만듭니다",
-      desc: "도구 몇 개 소개하고 끝나지 않습니다. 조직이 실제로 일하는 모습을 함께 들여다보고, 거기에 맞는 시스템을 같이 만듭니다. 시스템이 일상에 자리잡을 때까지 함께 합니다.",
-    },
+    flywheelIntro: "우리는 솔루션을 판매하지 않습니다. 입구에서 시작된 하나의 흐름이 한 바퀴 돌 때마다, 조직 안에는 사람과 시스템, 그리고 다시 도전할 시간이 쌓입니다.",
+    hubLabel: "조직의 자산",
+    hubValue: "사람·시스템·시간",
+    // ① 입구
     trackB: {
       title: "새로운 일을 같이 만들기",
-      subtitle: "사업을 같이 설계하고, 같이 운영합니다",
-      desc: "AI 교육, AX 전환, CSR 운영. 혼자서는 엄두가 안 났던 규모의 사업을 함께 제안하고, 함께 운영합니다. 제안서부터 실무, 성과 보고까지 끝까지 함께 합니다.",
+      subtitle: "혼자서는 엄두 내기 어려운 임팩트 프로젝트와 사회혁신 이니셔티브를 공동으로 도전하고 수주합니다.",
+      desc: "AI 교육, AX 전환, CSR 운영. 제안서 단계부터 함께 들어가 예산·인력·파트너의 공백을 메웁니다. 새로운 도전의 진입 장벽을, 함께라면 크게 낮출 수 있습니다.",
     },
+    // ② 엔진
     trackC: {
-      title: "기획부터 성과 보고까지, 한꺼번에 맡기기",
-      subtitle: "프로젝트 전체를 자체적으로 운영합니다",
-      desc: "역량 강화 교육, 일자리 교육 등 임팩트 조직의 성장을 위한 사업의 참여자 모집부터 성과 보고까지 프로젝트 전 과정을 운영합니다.",
+      title: "기획부터 성과 보고까지, 통째로 맡기기",
+      subtitle: "일자리 사업, 소규모 임팩트 조직의 AX 역량 강화, 커뮤니티 밋업, 컨퍼런스 등 프로젝트 전 과정을 책임집니다.",
+      desc: "역량 강화 교육부터 일자리 사업까지, 참여자 모집과 운영, 성과 측정과 보고를 전담합니다. 이 과정 자체가 곧 조직의 AX 전환 경험으로 축적됩니다.",
     },
+    // ③ 자산
+    trackA: {
+      title: "사람이 자라는 구조 남기기",
+      subtitle: "프로젝트를 마치면, 시스템과 매뉴얼이 자산으로 남아 그 안에서 사람이 자라는 구조가 됩니다.",
+      desc: "일하는 모습을 함께 들여다보고 조직에 맞는 AI 시스템을 만듭니다. 노하우는 한 사람의 머릿속이 아니라 누구나 따라 쓰는 매뉴얼과 위키로 남아, 담당자가 바뀌어도 사라지지 않습니다. 이렇게 남은 구조 안에서 구성원은 일을 통해 배우고 자랍니다.",
+    },
+    // ④ 확산
     trackEdu: {
       title: "배우는 자리를 함께 만들기",
-      subtitle: "교육과 행사로 AI 역량을 함께 키웁니다",
-      desc: "한 번 듣고 끝나는 강의가 아닙니다. 조직의 실제 업무를 소재로 익히는 AI 교육부터, AI·AX를 주제로 한 세미나·컨퍼런스 기획·운영까지. 배운 것이 현장에 남도록 함께 설계합니다.",
+      subtitle: "한 프로젝트에서 익힌 방법이 교육과 커뮤니티를 통해 동료 조직이 성장하는 출발선이 됩니다.",
+      desc: "조직의 실제 업무를 소재로 익히는 AI 교육부터 AI·AX 세미나·컨퍼런스 기획·운영까지. 한 조직의 경험이 생태계 전체의 출발선을 끌어올립니다.",
     },
   },
 
@@ -280,9 +323,9 @@ const CONTENT = {
   about: {
     headingLine1: "언러닝컴퍼니는 사회문제를 해결하는 조직의 현실을 가장 잘 아는",
     headingLine2: "전문가들",          // 주황색
-    subtext: "사회문제를 해결하는 현장에서 10년 넘게 직접 일했고,\n낡은 업무 방식 때문에 정작 중요한 일을 놓쳤던 시간도 보냈습니다.\n훌륭한 미션의 동료들이 효능감을 느끼지 못하고 번아웃되는 현장을 10년간 지켜봤습니다.\n언러닝컴퍼니는 그 풍경을 바꾸기로 한 사람들의 결심입니다.",
+    subtext: "훌륭한 미션의 동료들이 효능감을 느끼지 못하고 번아웃되는 현장을 10년간 지켜봤습니다.\n언러닝컴퍼니는 그 풍경을 바꾸기로 한 사람들의 결심입니다.",
     vision: "사람이 자라는 AI 시대",
-    mission: "낡은 워크플로우를 파괴하여 파트너 조직이 핵심 가치와 미션에만 온전히 몰입할 수 있도록 돕는다.",
+    mission: "사회혁신 조직이 핵심 가치와 미션에만 온전히 몰입할 수 있도록 돕는다.",
     philosophyQuote: "채우기 위해서는 먼저 비워야 합니다.",
     philosophyBody: "조직의 변화는 새로운 기술을 더 많이 배우는 데서 오지 않습니다.\n지금까지 익숙했던 방식을 먼저 내려놓는 일(unlearning)에서 시작합니다.\n기술이 사람을 대체하는 것이 아니라, 사람이 본연의 미션에 더 깊이 몰입할 수 있도록 돕는 것.\n작은 조직이 더 큰 시스템을 흉내내는 것이 아니라, 자기 사이즈에 맞는 가장 단단한 운영 구조를 갖추는 것.\n우리는 기술을 파는 회사가 아닙니다.\n기술이 작동하는 일하는 방식을 함께 만드는 파트너이자 동료입니다.",
     tags: ["10년차 현장 경험", "현장의 언어로 문제를 진단", "조직에 딱 맞는 적정기술로 반복을 자동화"],
@@ -313,9 +356,9 @@ const CONTENT = {
 
   // ⑥ 컨택 섹션
   contact: {
-    headingLine1: "협력이 필요한 부분이 있다면",
-    headingLine2: "부담없이 문의해 주세요.",  // 초록색
-    subtext: "\"회계 정산이 너무 오래 걸려요.\" \"보고서 쓰느라 밤을 새워요.\"\n어디서 시간이 새고 있는지 들려주세요.\n현장에서 일해 온 저희가 직접 듣고, 함께 방법을 찾아가겠습니다.",
+    headingLine1: "함께 도전하고 싶은 일이 있다면",
+    headingLine2: "편하게 이야기를 시작해요.",  // 초록색
+    subtext: "\"새로운 사업에 도전하고 싶은데 함께할 손이 부족해요.\" \"우리 조직도 AI로 일하는 방식을 바꾸고 싶어요.\"\n무엇이든, 지금 떠오르는 고민을 들려주세요.\n현장에서 함께 일해 온 동료로서 직접 듣고, 함께 자랄 방법을 찾아가겠습니다.",
   },
 
   // ⑦ 푸터
@@ -490,7 +533,7 @@ function TermLine({ text, showCursor, size = 15 }) {
     if (t.startsWith("#")) return <span style={{ color: C.textFaint, fontStyle: "italic" }}>{t}</span>;
     return <span style={{ color: C.textDim }}>{t}</span>;
   };
-  return <div style={{ fontFamily: MONO, fontSize: size, lineHeight: 1.9, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>{colorize(text)}{showCursor && <Cursor />}</div>;
+  return <div style={{ fontFamily: TERM_MONO, fontSize: size, lineHeight: 1.9, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>{colorize(text)}{showCursor && <Cursor />}</div>;
 }
 
 function SectionLabel({ num, text }) {
@@ -523,6 +566,7 @@ function Nav({ view, setView, scrollToSection, openContact, theme, toggleTheme }
   }, [menuOpen]);
 
   const menuLinks = [
+    { name: 'Home',       sectionId: 'home' },
     { name: 'Work',       sectionId: 'work' },
     // { name: 'Programs',  viewId: 'curriculum' },  // 콘텐츠 정비 전까지 숨김
     { name: 'About',      sectionId: 'about' },
@@ -600,7 +644,7 @@ function Nav({ view, setView, scrollToSection, openContact, theme, toggleTheme }
             fontFamily: HEAD, fontSize: 13, color: C.bg, background: C.green, border: `1px solid ${C.green}`,
             padding: "8px 16px", borderRadius: 4, transition: "all .2s", whiteSpace: "nowrap", cursor: "pointer"
           }} onMouseEnter={e => { e.target.style.background = "#D1FF97"; e.target.style.borderColor = "#D1FF97"; e.target.style.color = "#000"; }} onMouseLeave={e => { e.target.style.background = C.green; e.target.style.borderColor = C.green; e.target.style.color = C.bg; }}>
-            문의하기 →
+            함께 자라기 →
           </button>
           <button
             className="hamburger"
@@ -654,7 +698,7 @@ function Nav({ view, setView, scrollToSection, openContact, theme, toggleTheme }
             background: "transparent", border: `1px solid ${C.green}`,
             padding: "14px 36px", borderRadius: 4, cursor: "pointer"
           }}>
-            문의하기 →
+            함께 자라기 →
           </button>
         </div>
       )}
@@ -845,119 +889,345 @@ function ProblemSection() {
   );
 }
 
+/* 플라이휠 다이어그램 — ① 입구 → ② 엔진 → ③ 남는 것 → ④ 확산 → 다시 ① (시계방향 순환) */
+/* 성장 궤도 — 조직(행성)을 공전하는 로켓. 한 바퀴 돌 때마다 자산이 쌓이는 흐름을 애니메이션으로 표현 */
+/* 진짜 WebGL 3D 글로브 (Three.js) — 점-구체 자전 + 프레넬 대기광 + 궤도 위성 + 별, 드래그 회전 */
+/* 진짜 지구(Three.js) — 텍스처 지구 자전 + 구름 + 블루 대기광 + 기울어진 궤도를 도는 3D 로켓(입구→엔진→자산→확산) */
+function Globe3D({ stages }) {
+  const mountRef = useRef(null);
+  useEffect(() => {
+    const THREE = window.THREE;
+    const mount = mountRef.current;
+    if (!THREE || !mount) return;
+    let width = mount.clientWidth || 760;
+    let height = mount.clientHeight || 480;
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(42, width / height, 0.1, 100);
+    const fitCamera = () => { const ar = width / height; camera.position.z = ar < 0.7 ? 16 : ar < 1 ? 14 : ar < 1.4 ? 11.5 : 10; };
+    fitCamera();
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setSize(width, height);
+    renderer.domElement.style.display = "block";
+    mount.appendChild(renderer.domElement);
+
+    // 조명 (밝은 카툰 톤 — 색이 또렷하게)
+    scene.add(new THREE.AmbientLight(0x8a9ec0, 1.05));
+    const sun = new THREE.DirectionalLight(0xffffff, 0.85);
+    sun.position.set(-3.5, 1.6, 3);
+    scene.add(sun);
+
+    // 로우폴리 카툰 행성
+    const R = 2;
+    const earthGroup = new THREE.Group();
+    earthGroup.rotation.z = 0.3;
+    scene.add(earthGroup);
+    // 절차적 대륙: 아이코사면(로우폴리) + 면별 색 (바다/땅/빙하)
+    const planetGeo = new THREE.IcosahedronGeometry(R, 3).toNonIndexed();
+    const pAttr = planetGeo.getAttribute("position");
+    const cArr = new Float32Array(pAttr.count * 3);
+    const C_OCEAN = new THREE.Color(0x2ab0ef), C_LAND = new THREE.Color(0x4fd072), C_LAND2 = new THREE.Color(0x39b85e), C_ICE = new THREE.Color(0xeefaff);
+    const seeds = [];
+    for (let i = 0; i < 9; i++) {
+      const th = Math.random() * Math.PI * 2, ph = Math.acos(2 * Math.random() - 1);
+      seeds.push([Math.sin(ph) * Math.cos(th), Math.cos(ph), Math.sin(ph) * Math.sin(th), 0.8 + Math.random() * 0.11]);
+    }
+    const vc = new THREE.Vector3();
+    for (let f = 0; f < pAttr.count; f += 3) {
+      vc.set(
+        (pAttr.getX(f) + pAttr.getX(f + 1) + pAttr.getX(f + 2)) / 3,
+        (pAttr.getY(f) + pAttr.getY(f + 1) + pAttr.getY(f + 2)) / 3,
+        (pAttr.getZ(f) + pAttr.getZ(f + 1) + pAttr.getZ(f + 2)) / 3
+      ).normalize();
+      let land = false;
+      const wob = Math.sin(vc.x * 7) * 0.05 + Math.sin(vc.z * 6) * 0.05 + Math.sin(vc.y * 9) * 0.04;
+      for (let si = 0; si < seeds.length; si++) {
+        const s = seeds[si];
+        if (vc.x * s[0] + vc.y * s[1] + vc.z * s[2] > s[3] + wob) { land = true; break; }
+      }
+      const c = Math.abs(vc.y) > 0.85 ? C_ICE : (land ? (Math.random() < 0.5 ? C_LAND : C_LAND2) : C_OCEAN);
+      for (let k = 0; k < 3; k++) { cArr[(f + k) * 3] = c.r; cArr[(f + k) * 3 + 1] = c.g; cArr[(f + k) * 3 + 2] = c.b; }
+    }
+    planetGeo.setAttribute("color", new THREE.BufferAttribute(cArr, 3));
+    planetGeo.computeVertexNormals();
+    const earth = new THREE.Mesh(planetGeo, new THREE.MeshLambertMaterial({ vertexColors: true, flatShading: true }));
+    earthGroup.add(earth);
+    // 카툰 대기광 (밝은 시안-그린)
+    earthGroup.add(new THREE.Mesh(
+      new THREE.SphereGeometry(R * 1.22, 48, 48),
+      new THREE.ShaderMaterial({
+        uniforms: { glowColor: { value: new THREE.Color(0x4ff0d4) } },
+        vertexShader: "varying vec3 vN; void main(){ vN = normalize(normalMatrix * normal); gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }",
+        fragmentShader: "uniform vec3 glowColor; varying vec3 vN; void main(){ float i = pow(0.7 - dot(vN, vec3(0.0,0.0,1.0)), 2.6); i = clamp(i,0.0,1.0); gl_FragColor = vec4(glowColor,1.0) * i; }",
+        side: THREE.BackSide, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false
+      })
+    ));
+
+    // 납작한 가로 궤도 (orbit-like) + 4 웨이포인트 + 3D 로켓
+    const ORB = 3.1;
+    const ring = new THREE.Group();
+    ring.rotation.x = 0.3; ring.rotation.y = 0;
+    scene.add(ring);
+    ring.add(new THREE.Mesh(
+      new THREE.TorusGeometry(ORB, 0.009, 8, 220),
+      new THREE.MeshBasicMaterial({ color: 0xa9bdd6, transparent: true, opacity: 0.4 })
+    ));
+    // 4단계를 네 모서리(대각선)에 배치 — 상하 극단/사이드 극단을 피해 겹침 없이 보이게. 순서(입구→엔진→자산→확산)만 유지
+    mount.style.position = "relative";
+    const ANG = [138, 42, -42, -138].map(d => d * Math.PI / 180); // 입구(좌상)·엔진(우상)·자산(우하)·확산(좌하)
+    const angFor = i => ANG[i];
+    const labelEls = [], markers = [], halos = [];
+    stages.forEach((s, i) => {
+      const a = angFor(i), px = Math.cos(a) * ORB, py = Math.sin(a) * ORB;
+      const cobj = new THREE.Color(s.color);
+      const marker = new THREE.Mesh(new THREE.SphereGeometry(0.16, 20, 20), new THREE.MeshBasicMaterial({ color: cobj }));
+      marker.position.set(px, py, 0); ring.add(marker); markers.push(marker);
+      const halo = new THREE.Mesh(new THREE.SphereGeometry(0.34, 20, 20), new THREE.MeshBasicMaterial({ color: cobj, transparent: true, opacity: 0.25, depthWrite: false }));
+      halo.position.set(px, py, 0); ring.add(halo); halos.push(halo);
+      const el = document.createElement("div");
+      el.style.cssText = "position:absolute;pointer-events:none;transform:translate(-50%,-50%);text-align:center;white-space:nowrap;z-index:3;";
+      el.innerHTML =
+        '<div style="font-family:Paperlogy,Pretendard,sans-serif;font-weight:900;font-size:23px;color:' + s.color + ';text-shadow:0 2px 12px ' + s.color + '88;">' + s.key + '</div>' +
+        '<div style="font-family:Paperlogy,Pretendard,sans-serif;font-weight:700;font-size:13.5px;color:#bcd0e4;margin-top:2px;">' + (s.orbitShort || s.short) + '</div>';
+      mount.appendChild(el);
+      labelEls.push(el);
+    });
+    const lp = new THREE.Vector3();
+    const placeLabels = () => {
+      camera.updateProjectionMatrix();
+      camera.updateMatrixWorld();
+      ring.updateMatrixWorld(true);
+      stages.forEach((s, i) => {
+        const a = angFor(i);
+        lp.set(Math.cos(a) * ORB * 1.32, Math.sin(a) * ORB * 1.32, 0).applyMatrix4(ring.matrixWorld).project(camera);
+        labelEls[i].style.left = (lp.x * 0.5 + 0.5) * width + "px";
+        labelEls[i].style.top = (-lp.y * 0.5 + 0.5) * height + "px";
+      });
+    };
+    placeLabels();
+
+    // 카툰 3D 로켓 (코=+Y, 진행 방향 정렬, 플랫셰이딩 단색)
+    const rocket = new THREE.Group();
+    const bodyMat = new THREE.MeshLambertMaterial({ color: 0xf4f7fb, flatShading: true });
+    const noseMat = new THREE.MeshLambertMaterial({ color: 0xff5b6b, flatShading: true });
+    const finMat = new THREE.MeshLambertMaterial({ color: 0x2ee07e, flatShading: true });
+    rocket.add(new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.17, 0.46, 14), bodyMat)); // 통통한 동체
+    const nose = new THREE.Mesh(new THREE.ConeGeometry(0.17, 0.32, 14), noseMat);
+    nose.position.y = 0.39; rocket.add(nose);
+    const win = new THREE.Mesh(new THREE.SphereGeometry(0.072, 16, 16), new THREE.MeshBasicMaterial({ color: 0x8fe0ff }));
+    win.position.set(0, 0.12, 0.15); win.scale.z = 0.4; rocket.add(win);
+    for (let k = 0; k < 3; k++) {
+      const fin = new THREE.Mesh(new THREE.ConeGeometry(0.1, 0.26, 4), finMat);
+      const fa = k * (Math.PI * 2 / 3);
+      fin.position.set(Math.cos(fa) * 0.18, -0.2, Math.sin(fa) * 0.18);
+      fin.rotation.x = Math.PI; fin.rotation.y = -fa; rocket.add(fin);
+    }
+    const flame = new THREE.Mesh(new THREE.ConeGeometry(0.13, 0.4, 14), new THREE.MeshBasicMaterial({ color: 0xffb13d, transparent: true, opacity: 0.95, depthWrite: false }));
+    flame.position.y = -0.42; flame.rotation.x = Math.PI; rocket.add(flame);
+    const flame2 = new THREE.Mesh(new THREE.ConeGeometry(0.07, 0.22, 14), new THREE.MeshBasicMaterial({ color: 0xfff15a, transparent: true, opacity: 0.95, depthWrite: false }));
+    flame2.position.y = -0.34; flame2.rotation.x = Math.PI; rocket.add(flame2);
+    rocket.scale.setScalar(1.0);
+    ring.add(rocket);
+
+    // 별 배경
+    const sN = 380, sPos = new Float32Array(sN * 3);
+    for (let i = 0; i < sN; i++) {
+      const r = 9 + Math.random() * 12, th = Math.random() * Math.PI * 2, ph = Math.acos(2 * Math.random() - 1);
+      sPos[i * 3] = r * Math.sin(ph) * Math.cos(th);
+      sPos[i * 3 + 1] = r * Math.sin(ph) * Math.sin(th);
+      sPos[i * 3 + 2] = r * Math.cos(ph);
+    }
+    const sGeo = new THREE.BufferGeometry();
+    sGeo.setAttribute("position", new THREE.BufferAttribute(sPos, 3));
+    const stars = new THREE.Points(sGeo, new THREE.PointsMaterial({ color: 0x9fb3c8, size: 0.05, transparent: true, opacity: 0.5 }));
+    scene.add(stars);
+    // 가까운 별(반짝임 큰) 레이어
+    const s2N = 90, s2Pos = new Float32Array(s2N * 3);
+    for (let i = 0; i < s2N; i++) {
+      const r = 6 + Math.random() * 4, th = Math.random() * Math.PI * 2, ph = Math.acos(2 * Math.random() - 1);
+      s2Pos[i * 3] = r * Math.sin(ph) * Math.cos(th); s2Pos[i * 3 + 1] = r * Math.sin(ph) * Math.sin(th); s2Pos[i * 3 + 2] = -2 - Math.random() * 6;
+    }
+    const s2Geo = new THREE.BufferGeometry();
+    s2Geo.setAttribute("position", new THREE.BufferAttribute(s2Pos, 3));
+    const stars2 = new THREE.Points(s2Geo, new THREE.PointsMaterial({ color: 0xeaf4ff, size: 0.11, transparent: true, opacity: 0.8 }));
+    scene.add(stars2);
+
+    // 슈팅스타(유성) — 주기적으로 화면을 가로지름
+    const meteors = [];
+    for (let m = 0; m < 3; m++) {
+      const g = new THREE.Group();
+      const head = new THREE.Mesh(new THREE.SphereGeometry(0.055, 8, 8), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0, depthWrite: false }));
+      const trail = new THREE.Line(
+        new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, 0), new THREE.Vector3(1.7, 0.62, 0)]),
+        new THREE.LineBasicMaterial({ color: 0xc4e8ff, transparent: true, opacity: 0, depthWrite: false })
+      );
+      g.add(head); g.add(trail); g.position.z = -3; scene.add(g);
+      meteors.push({ g, head, trail, t0: m * 3.1 + Math.random() * 2.5, dur: 1.3, cycle: 9 + m * 2, sx: 4.5 + Math.random() * 3.5, sy: 3.6 + Math.random() * 2.4 });
+    }
+
+    const onResize = () => {
+      width = mount.clientWidth; height = mount.clientHeight;
+      if (!width || !height) return;
+      camera.aspect = width / height; fitCamera(); camera.updateProjectionMatrix(); renderer.setSize(width, height);
+      placeLabels();
+    };
+    window.addEventListener("resize", onResize);
+
+    const UP = new THREE.Vector3(0, 1, 0);
+    let raf, t = 0;
+    const animate = () => {
+      raf = requestAnimationFrame(animate);
+      t += 0.016;
+      earth.rotation.y += 0.0026;
+      // 로켓: 각도 감소 → 입구→엔진→자산→확산 순서로 순환
+      const a = Math.PI / 2 - t * 0.34;
+      rocket.position.set(Math.cos(a) * ORB, Math.sin(a) * ORB, 0);
+      rocket.quaternion.setFromUnitVectors(UP, new THREE.Vector3(Math.sin(a), -Math.cos(a), 0).normalize());
+      flame.scale.y = 0.75 + (Math.sin(t * 32) * 0.5 + 0.5) * 0.5;
+      // 로켓이 마커를 지날 때 펄스 이펙트
+      for (let i = 0; i < markers.length; i++) {
+        let dd = a - angFor(i);
+        dd = Math.atan2(Math.sin(dd), Math.cos(dd));
+        const e = Math.pow(Math.max(0, 1 - Math.abs(dd) / 0.5), 2);
+        markers[i].scale.setScalar(1 + e * 1.2);
+        halos[i].scale.setScalar(1 + e * 2.6);
+        halos[i].material.opacity = 0.22 + e * 0.62;
+      }
+      // 별 반짝임
+      stars.rotation.y += 0.0003;
+      stars.material.opacity = 0.42 + 0.13 * Math.sin(t * 1.6);
+      stars2.material.opacity = 0.55 + 0.4 * Math.sin(t * 2.4 + 1);
+      // 슈팅스타
+      for (let mi = 0; mi < meteors.length; mi++) {
+        const mo = meteors[mi];
+        const lt = (t - mo.t0) % mo.cycle;
+        if (lt >= 0 && lt < mo.dur) {
+          const f = lt / mo.dur, o = Math.sin(f * Math.PI);
+          mo.g.position.set(mo.sx - f * 12, mo.sy - f * 4.4, -3);
+          mo.head.material.opacity = o; mo.trail.material.opacity = o * 0.7;
+        } else { mo.head.material.opacity = 0; mo.trail.material.opacity = 0; }
+      }
+      renderer.render(scene, camera);
+    };
+    animate();
+
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", onResize);
+      labelEls.forEach(el => el.parentNode && el.parentNode.removeChild(el));
+      renderer.dispose();
+      if (renderer.domElement.parentNode) renderer.domElement.parentNode.removeChild(renderer.domElement);
+    };
+  }, []);
+  return <div ref={mountRef} style={{ width: "100%", height: "clamp(420px, 48vw, 580px)" }} />;
+}
+
 function WorkSection() {
   const C = useContext(ThemeContext);
   const [ref, visible] = useInView();
 
-  // 협업방식 순서: B(새로운 일을 같이 만들기) → A(낡은 업무방식 비우기) → 교육·행사 → C(통째로 운영)
-  const tracks = [
+  // 성장 궤도 순서: 입구(B) → 엔진(C) → 자산(A) → 확산(Edu) → 다시 입구
+  const stages = [
     {
-      id: "01",
-      track: CONTENT.work.trackB,
-      before: ["> [ERROR] 좋은 기획은 있지만 실행할 손발이 부족함", "> [WARN] 외부 협력 제안서 및 결과 보고서 작성 부담"],
-      after: ["> [OK] 10년 현장 경험으로 제안서·전략 함께 설계", "> [OK] AX 빌더와 함께 운영"],
+      id: "s1", eng: "entry", key: "입구", short: "공동수주", color: C.blue, track: CONTENT.work.trackB,
+      before: ["> [ERROR] 실행할 인력·예산이 부족", "> [WARN] 운영 업무 과부하의 부담"],
+      after: ["> [OK] AX 운영 전문인력 현장 투입", "> [OK] 인력 공백 해소 및 성장 경로 확보"],
       steps: null,
     },
     {
-      id: "02",
-      track: CONTENT.work.trackA,
-      before: ["> [ERROR] 영수증 풀칠, 중복되는 엑셀 수기 입력", "> [WARN] 담당자 퇴사 시 업무 노하우 소멸"],
-      after: ["> [OK] AI 기반 자동 정산 및 문서화 시스템 안착", "> [OK] 누구나 따라 쓸 수 있는 실무 위키 완성"],
-      steps: [
-        { step: "01", label: "진단", duration: "1~2주", desc: "어디가 막히는지\n수치로 찾기" },
-        { step: "02", label: "구축", duration: "3~4주", desc: "AI+노코드\n시스템 제작" },
-        { step: "03", label: "내재화", duration: "2~3주", desc: "팀이 스스로\n쓸 수 있을 때까지" },
-      ],
-    },
-    {
-      id: "03",
-      track: CONTENT.work.trackEdu,
-      before: ["> [ERROR] AI 교육을 들어도 막상 업무엔 적용이 안 됨", "> [WARN] AI·AX 행사를 열고 싶지만 기획·운영 인력이 부족함"],
-      after: ["> [OK] 우리 업무를 소재로 익혀 바로 현장에 적용", "> [OK] AI·AX 행사, 기획부터 운영까지 함께"],
+      id: "s2", eng: "engine", key: "엔진", short: "전 과정 운영", color: C.green, track: CONTENT.work.trackC,
+      before: ["> [ERROR] 운영 인력의 공백", "> [WARN] 모집·운영·성과 전 과정 부담"],
+      after: ["> [OK] 믿고 맡길 수 있는 운영 파트너", "> [OK] 조직은 핵심 미션에만 집중"],
       steps: null,
     },
     {
-      id: "04",
-      track: CONTENT.work.trackC,
-      before: ["> [ERROR] 사업은 수주했는데 운영할 인력이 없음", "> [WARN] 기획·모집·교육·성과보고 전 과정이 부담"],
-      after: ["> [OK] 참여자 모집부터 성과 측정, 인재 연결까지 전담", "> [OK] 공공기관·재단·NGO가 핵심 미션에만 집중"],
+      id: "s3", eng: "asset", key: "자산", short: "시스템·매뉴얼", orbitShort: "AX 시스템·매뉴얼", color: C.cyan, track: CONTENT.work.trackA,
+      before: ["> [ERROR] 일 시킬 조직에는 인재가 없고", "> [ERROR] 일 배울 청년에겐 현장이 없음", "> [WARN] 연결되지 않는 두 세계"],
+      after: ["> [OK] 누구나 따라 쓰는 워크플로우", "> [OK] 조직 안에서 리더로 자라가기"],
+      steps: null,
+    },
+    {
+      id: "s4", eng: "spread", key: "확산", short: "교육·커뮤니티", color: C.purple, track: CONTENT.work.trackEdu,
+      before: ["> [ERROR] 교육은 듣는데 실무 적용 안됨", "> [WARN] AX 격차에서 오는 불안함과 더딘 성장"],
+      after: ["> [OK] 소규모 임팩트조직의 AX 역량 강화", "> [OK] 생태계 안에서 함께 자라가는 임팩트 커리어"],
       steps: null,
     },
   ];
 
   return (
-    <section id="work" ref={ref} style={{ padding: "120px 20px", background: C.bg, borderTop: `1px solid ${C.border}` }}>
-      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+    <section id="work" ref={ref} style={{ padding: "84px 20px", background: C.bg, borderTop: `1px solid ${C.border}` }}>
+      <div style={{ maxWidth: 1180, margin: "0 auto" }}>
         <SectionLabel num="01" text="Work" />
-        <h2 style={{ fontFamily: HEAD, fontSize: "clamp(28px, 5vw, 44px)", fontWeight: 700, color: C.textBright, lineHeight: 1.3, marginBottom: 20, wordBreak: "keep-all" }}>
+        <h2 style={{ fontFamily: HEAD, fontSize: "clamp(26px, 4vw, 38px)", fontWeight: 700, color: C.textBright, lineHeight: 1.3, marginBottom: 44, wordBreak: "keep-all" }}>
           {CONTENT.work.headingLine1}<br />
           <span style={{ color: C.green }}>{CONTENT.work.headingLine2}</span>
         </h2>
-        <p style={{ fontFamily: HEAD, fontSize: 18, fontWeight: 400, color: C.textDim, lineHeight: 2.1, marginBottom: 56, wordBreak: "keep-all" }}>
-          {(() => {
-            const chip = { background: "#313540", color: "#CA9C64", padding: "3px 12px", borderRadius: 999, fontWeight: 600, whiteSpace: "nowrap" };
-            return (<>
-              솔루션을 판매하지 않습니다. 파트너 조직 안에 <span style={chip}>사람</span>과 <span style={chip}>시스템</span>을, 그리고 다시 도전할 수 있는 <span style={chip}>시간</span>을 남깁니다.
-            </>);
-          })()}
-        </p>
 
-        {tracks.map((t, idx) => (
-          <div key={t.id} style={{
-            background: C.bgSoft,
-            border: `1px solid ${C.border}`,
-            borderRadius: 16,
-            overflow: "hidden",
-            marginBottom: idx < tracks.length - 1 ? 28 : 0,
-            boxShadow: C.cardShadow,
-            opacity: visible ? 1 : 0,
-            transform: visible ? "translateY(0)" : "translateY(24px)",
-            transition: `all .5s ease ${idx * 0.12}s`,
-          }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 16px", background: C.bgHead, borderBottom: `1px solid ${C.border}` }}>
-              <span style={{ width: 11, height: 11, borderRadius: "50%", background: "#ff5f57" }} />
-              <span style={{ width: 11, height: 11, borderRadius: "50%", background: "#febc2e" }} />
-              <span style={{ width: 11, height: 11, borderRadius: "50%", background: "#28c840" }} />
-              <span style={{ flex: 1, textAlign: "center", fontFamily: MONO, fontSize: 12, color: C.textDim }}>collaboration-impact.sh</span>
-            </div>
-            <div style={{ padding: "clamp(20px, 4vw, 36px)" }}>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 10, padding: "6px 14px", border: `1px solid ${C.green}66`, background: `${C.green}10`, borderRadius: 999, marginBottom: 20 }}>
-              <span style={{ width: 8, height: 8, borderRadius: "50%", background: C.green, display: "inline-block" }} />
-              <span style={{ fontFamily: MONO, fontSize: 12, color: C.green, letterSpacing: ".1em", fontWeight: 700 }}>협업 방식 {t.id}</span>
-            </div>
-            <h3 style={{ fontFamily: SANS, fontSize: "clamp(22px, 3vw, 28px)", fontWeight: 700, color: C.textBright, marginBottom: 10, wordBreak: "keep-all", lineHeight: 1.35 }}>{t.track.title}</h3>
-            <p style={{ fontFamily: SANS, fontSize: 17, fontWeight: 500, color: C.textBright, marginBottom: 14, wordBreak: "keep-all" }}>{t.track.subtitle}</p>
-            <p style={{ fontFamily: SANS, fontSize: 17, fontWeight: 400, color: C.textDim, lineHeight: 1.85, marginBottom: 28, wordBreak: "keep-all" }}>{t.track.desc}</p>
-
-            {t.steps && (
-              <div style={{ display: "flex", gap: 0, marginBottom: 28, background: C.bgCard, border: `1px solid ${C.border}`, borderRadius: 8, overflow: "hidden", boxShadow: C.cardShadow }}>
-                {t.steps.map((s, i) => (
-                  <div key={i} style={{ flex: 1, padding: "18px 20px", borderRight: i < t.steps.length - 1 ? `1px solid ${C.border}` : "none", position: "relative" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-                      <span style={{ fontFamily: MONO, fontSize: 11, color: C.green, letterSpacing: ".1em" }}>STEP {s.step}</span>
-                      {i < t.steps.length - 1 && <span style={{ position: "absolute", right: -10, top: "50%", transform: "translateY(-50%)", fontFamily: MONO, fontSize: 16, color: C.border, zIndex: 1 }}>›</span>}
-                    </div>
-                    <div style={{ fontFamily: SANS, fontSize: 16, fontWeight: 700, color: C.textBright, marginBottom: 2 }}>{s.label}</div>
-                    <div style={{ fontFamily: MONO, fontSize: 12, color: C.textDim, marginBottom: 8 }}>{s.duration}</div>
-                    <div style={{ fontFamily: SANS, fontSize: 15, color: C.textDim, lineHeight: 1.6, whiteSpace: "pre-line" }}>{s.desc}</div>
-                  </div>
-                ))}
+        <div className="work-layout" style={{ display: "flex", flexDirection: "column", alignItems: "stretch", gap: 0 }}>
+          {/* 1단 — 풀블리드 다크 밴드: 오로라 + 도트그리드 + 와이드 3D 지구본 궤도 */}
+          <div className="work-hero-band" style={{ padding: "clamp(48px, 7vw, 84px) 20px clamp(44px, 6vw, 72px)", marginTop: 8, marginBottom: 52, opacity: visible ? 1 : 0, transition: "opacity .6s ease" }}>
+            <div className="aurora aurora-1" />
+            <div className="aurora aurora-2" />
+            <div className="aurora aurora-3" />
+            <div className="hero-grid" />
+            <div style={{ position: "relative", zIndex: 2, maxWidth: 980, margin: "0 auto", display: "flex", flexDirection: "column", alignItems: "center" }}>
+              <div style={{ width: "100%", maxWidth: 860, margin: "0 auto" }}>
+                <Globe3D stages={stages} />
               </div>
-            )}
-
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }} className="track-grid">
-              <div style={{ background: C.bgCard, border: `1px solid ${C.red}44`, borderRadius: 8, padding: 24, boxShadow: C.cardShadow }}>
-                <div style={{ fontFamily: MONO, fontSize: 13, color: C.red, fontWeight: 700, marginBottom: 16, letterSpacing: ".1em" }}>// BEFORE (기존의 방식)</div>
-                {t.before.map((txt, i) => <TermLine key={i} text={txt} size={15} />)}
-              </div>
-              <div style={{ background: C.bgCard, border: `1px solid ${C.green}44`, borderRadius: 8, padding: 24, boxShadow: C.cardShadow }}>
-                <div style={{ fontFamily: MONO, fontSize: 13, color: C.green, fontWeight: 700, marginBottom: 16, letterSpacing: ".1em" }}>// AFTER (언러닝과 함께)</div>
-                {t.after.map((txt, i) => <TermLine key={i} text={txt} size={15} />)}
-              </div>
-            </div>
+              <p style={{ fontFamily: HEAD, fontSize: "clamp(22px, 3.4vw, 30px)", fontWeight: 700, color: "#f0f6fc", textAlign: "center", marginTop: -28, wordBreak: "keep-all", lineHeight: 1.45 }}>
+                <span style={{ color: "#00ff88" }}>{CONTENT.work.hubValue}</span>이 쌓이는 성장 궤도
+              </p>
             </div>
           </div>
-        ))}
+
+          {/* 2단 — 터미널 카드 4개 한 줄 */}
+          <div className="work-stage-grid" style={{ width: "100%" }}>
+            {stages.map((t, idx) => (
+              <div key={t.id} className="stage-card" style={{
+                background: C.bgCard, border: `1px solid ${C.border}`, borderRadius: 10, overflow: "hidden", boxShadow: C.cardShadow,
+                display: "flex", flexDirection: "column",
+                opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(20px)",
+                transition: `all .45s ease ${idx * 0.08}s`,
+              }}>
+                {/* 터미널 창 헤더 (macOS 스타일) */}
+                <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 14px", background: `linear-gradient(${C.bgHead}, ${C.bgSoft})`, borderBottom: `1px solid ${C.border}`, boxShadow: "inset 0 1px 0 rgba(255,255,255,.05)" }}>
+                  <span style={{ width: 12, height: 12, borderRadius: "50%", background: "radial-gradient(circle at 32% 28%, #ff8a85, #ff5f57)", boxShadow: "inset 0 0 0 .5px #d8453c" }} />
+                  <span style={{ width: 12, height: 12, borderRadius: "50%", background: "radial-gradient(circle at 32% 28%, #ffd27a, #febc2e)", boxShadow: "inset 0 0 0 .5px #d39e22" }} />
+                  <span style={{ width: 12, height: 12, borderRadius: "50%", background: "radial-gradient(circle at 32% 28%, #6be67f, #28c840)", boxShadow: "inset 0 0 0 .5px #1aa82a" }} />
+                  <span style={{ flex: 1, textAlign: "center", fontFamily: MONO, fontSize: 12, color: C.textDim, letterSpacing: ".02em" }}>{t.eng}.sh</span>
+                </div>
+                {/* 본문 */}
+                <div style={{ padding: "14px 15px 15px", display: "flex", flexDirection: "column", gap: 8, flex: 1 }}>
+                  <span style={{ alignSelf: "flex-start", fontFamily: TERM_MONO, fontSize: 11.5, color: t.color, letterSpacing: ".03em", fontWeight: 700, border: `1px solid ${t.color}55`, background: `${t.color}12`, borderRadius: 6, padding: "3px 9px" }}>[{t.key}] {t.short}</span>
+                  <h3 style={{ fontFamily: SANS, fontSize: 16.5, fontWeight: 700, color: C.textBright, lineHeight: 1.35, wordBreak: "keep-all" }}>{t.track.title}</h3>
+                  <p style={{ fontFamily: SANS, fontSize: 12.5, fontWeight: 400, color: C.textDim, lineHeight: 1.6, wordBreak: "keep-all" }}>{t.track.subtitle}</p>
+
+                  {t.steps && (
+                    <div style={{ display: "flex", alignItems: "center", gap: 5, flexWrap: "wrap" }}>
+                      {t.steps.map((s, i) => (
+                        <React.Fragment key={i}>
+                          <span style={{ fontFamily: TERM_MONO, fontSize: 10.5, fontWeight: 700, color: t.color, background: `${t.color}12`, border: `1px solid ${t.color}40`, borderRadius: 5, padding: "2px 7px" }}>{s.label}</span>
+                          {i < t.steps.length - 1 && <span style={{ color: C.textFaint, fontSize: 11 }}>›</span>}
+                        </React.Fragment>
+                      ))}
+                    </div>
+                  )}
+
+                  <ThemeContext.Provider value={THEMES.dark}>
+                    <div style={{ background: "#0a0c10", border: "1px solid #20262e", borderRadius: 8, padding: "11px 12px", marginTop: "auto", boxShadow: "inset 0 2px 12px rgba(0,0,0,.55)" }}>
+                      <div style={{ fontFamily: TERM_MONO, fontSize: 11.5, lineHeight: 1.85, color: "#76808b" }}>
+                        <span style={{ color: "#00ff88" }}>$</span> ./{t.eng}.sh
+                      </div>
+                      {t.before.map((txt, i) => <TermLine key={"b" + i} text={txt} size={11.5} />)}
+                      {t.after.map((txt, i) => <TermLine key={"a" + i} text={txt} size={11.5} />)}
+                    </div>
+                  </ThemeContext.Provider>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );
@@ -1470,7 +1740,7 @@ function ContactModal({ open, onClose }) {
             </div>
             <div>
               <label htmlFor="contact-message" style={{ display: "block", fontFamily: SANS, fontSize: 14, fontWeight: 500, color: C.textDim, marginBottom: 8 }}>언러닝컴퍼니와 함께 해결하고 싶은 문제</label>
-              <textarea id="contact-message" name="message" required aria-required="true" placeholder="예: 영수증 풀칠과 엑셀 정산 때문에 본업을 할 시간이 없습니다." rows={3} style={{ width: "100%", padding: "13px 16px", background: C.bgSoft, border: `1px solid ${C.border}`, borderRadius: 6, color: C.textBright, fontFamily: SANS, fontSize: 16, outline: "none", resize: "vertical" }} />
+              <textarea id="contact-message" name="message" required aria-required="true" placeholder="예: 새 일자리 사업을 따내고 싶은데, 제안부터 운영까지 함께할 파트너가 필요해요." rows={3} style={{ width: "100%", padding: "13px 16px", background: C.bgSoft, border: `1px solid ${C.border}`, borderRadius: 6, color: C.textBright, fontFamily: SANS, fontSize: 16, outline: "none", resize: "vertical" }} />
             </div>
             <div style={{ background: `${C.green}08`, border: `1px solid ${C.border}`, borderRadius: 6, padding: "16px" }}>
               <p style={{ fontFamily: SANS, fontSize: 15, color: C.textDim, lineHeight: 1.7, marginBottom: 12 }}>
@@ -1485,11 +1755,11 @@ function ContactModal({ open, onClose }) {
               </label>
             </div>
             <button type="submit" disabled={submitting} className="btn-submit" style={{ marginTop: 6, width: "100%", padding: "16px", background: submitting ? C.border : C.green, color: submitting ? C.textDim : C.bg, border: "none", borderRadius: 6, fontFamily: SANS, fontSize: 17, fontWeight: 700, cursor: submitting ? "wait" : "pointer" }}>
-              {submitting ? "전송 중..." : "문의하기"}
+              {submitting ? "전송 중..." : "함께 시작하기"}
             </button>
             {status === "success" && (
               <div role="status" aria-live="polite" style={{ padding: "12px 16px", background: `${C.green}11`, border: `1px solid ${C.green}55`, borderRadius: 6, fontFamily: SANS, fontSize: 15, color: C.green, textAlign: "center" }}>
-                ✓ 문의를 받았습니다. 가까운 시일 내에 연락드리겠습니다.
+                ✓ 이야기 잘 받았습니다. 가까운 시일 내에 동료로서 먼저 연락드릴게요.
               </div>
             )}
             {status === "error" && (
