@@ -582,7 +582,7 @@ function TermLine({ text, showCursor, size = 15 }) {
     if (t.startsWith("#")) return <span style={{ color: C.textFaint, fontStyle: "italic" }}>{t}</span>;
     return <span style={{ color: C.textDim }}>{t}</span>;
   };
-  return <div style={{ fontFamily: TERM_MONO, fontSize: size, lineHeight: 1.9, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>{colorize(text)}{showCursor && <Cursor />}</div>;
+  return <div style={{ fontFamily: TERM_MONO, fontSize: size, lineHeight: 1.9, whiteSpace: "pre-wrap", wordBreak: "break-word", paddingLeft: "2ch", textIndent: "-2ch" }}>{colorize(text)}{showCursor && <Cursor />}</div>;
 }
 
 function SectionLabel({ num, text }) {
