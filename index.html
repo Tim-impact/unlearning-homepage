@@ -2045,9 +2045,6 @@ function Footer({ onOpenPrivacy }) {
             {F.tagline}
           </div>
         </div>
-        <div className="footer-contact" style={{ fontFamily: MONO, fontSize: 14, color: C.textDim, lineHeight: 1.8 }}>
-          <div>{F.email}</div>
-        </div>
       </div>
 
       {/* 사업자 정보 — 표준 표기 (사업자등록번호는 bizNumber 입력 시 자동 노출) */}
@@ -2058,6 +2055,9 @@ function Footer({ onOpenPrivacy }) {
           {F.bizNumber && <><Sep /><span>사업자등록번호 {F.bizNumber}</span></>}
         </div>
         <div>{F.address}</div>
+        <div style={{ marginTop: 2 }}>
+          이메일 <a href={`mailto:${F.email}`} style={{ color: C.textDim, textDecoration: "none" }}>{F.email}</a>
+        </div>
       </div>
 
       <div className="footer-bottom" style={{ maxWidth: 1000, margin: "32px auto 0", paddingTop: 24, borderTop: `1px dashed ${C.border}`, display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 12, fontFamily: MONO, fontSize: 12, color: C.textFaint }}>
