@@ -411,6 +411,10 @@ const CONTENT = {
   footer: {
     tagline: "세상을 바꾸는 사람들이 미션에만 몰입할 수 있도록.",
     email: "hello@un-learning.co",
+    company: "주식회사 언러닝컴퍼니",
+    ceo: "박형호",
+    address: "경기도 고양시 덕양구 지정로 110, 108호",
+    bizNumber: "",   // 사업자등록번호 — 발급 후 여기에 입력하면 자동 표기
   },
 };
 
@@ -2026,8 +2030,10 @@ function NewsDetailView({ id, setView, posts }) {
 /* ==========================================================================
    FOOTER
    ========================================================================== */
-function Footer() {
+function Footer({ onOpenPrivacy }) {
   const C = useContext(ThemeContext);
+  const F = CONTENT.footer;
+  const Sep = () => <span style={{ margin: "0 9px", opacity: .45 }}>|</span>;
   return (
     <footer style={{ borderTop: `1px solid ${C.border}`, padding: "60px 28px 40px", background: C.name === 'light' ? C.bgSoft : C.bgCard }}>
       <div style={{ maxWidth: 1000, margin: "0 auto", display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 32 }}>
@@ -2036,16 +2042,33 @@ function Footer() {
             <img src={C.name === 'light' ? "assets/img/logo-dark-blink.svg" : "assets/img/logo-white-blink.svg"} alt="언러닝컴퍼니" style={{ height: 36, width: "auto", display: "block", marginLeft: -15.3 }} />
           </div>
           <div style={{ fontFamily: SANS, fontSize: 15, fontWeight: 400, color: C.textDim, lineHeight: 1.8, maxWidth: 400, whiteSpace: "pre-line" }}>
-            {CONTENT.footer.tagline}
+            {F.tagline}
           </div>
         </div>
         <div className="footer-contact" style={{ fontFamily: MONO, fontSize: 14, color: C.textDim, lineHeight: 1.8 }}>
-          <div>{CONTENT.footer.email}</div>
+          <div>{F.email}</div>
         </div>
       </div>
-      <div className="footer-bottom" style={{ maxWidth: 1000, margin: "60px auto 0", paddingTop: 24, borderTop: `1px dashed ${C.border}`, display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 12, fontFamily: MONO, fontSize: 12, color: C.textFaint }}>
+
+      {/* 사업자 정보 — 표준 표기 (사업자등록번호는 bizNumber 입력 시 자동 노출) */}
+      <div className="footer-bizinfo" style={{ maxWidth: 1000, margin: "40px auto 0", fontFamily: SANS, fontSize: 13, fontWeight: 400, color: C.textFaint, lineHeight: 1.95, wordBreak: "keep-all" }}>
+        <div>
+          <span>{F.company}</span>
+          <Sep /><span>대표 {F.ceo}</span>
+          {F.bizNumber && <><Sep /><span>사업자등록번호 {F.bizNumber}</span></>}
+        </div>
+        <div>{F.address}</div>
+      </div>
+
+      <div className="footer-bottom" style={{ maxWidth: 1000, margin: "32px auto 0", paddingTop: 24, borderTop: `1px dashed ${C.border}`, display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 12, fontFamily: MONO, fontSize: 12, color: C.textFaint }}>
         <div>© 2026 unlearning company. All rights reserved.</div>
-        <div>세상을 바꾸는 일에만 집중하세요.</div>
+        <button
+          type="button"
+          onClick={onOpenPrivacy}
+          style={{ background: "none", border: "none", padding: 0, margin: 0, cursor: "pointer", fontFamily: MONO, fontSize: 12, color: C.textDim, textDecoration: "underline", textUnderlineOffset: 3 }}
+        >
+          개인정보처리방침
+        </button>
       </div>
     </footer>
   );
@@ -2082,6 +2105,7 @@ function App() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [contactOpen, setContactOpen] = useState(false);
+  const [privacyOpen, setPrivacyOpen] = useState(false);
   const [theme, setTheme] = useState(() => {
     try {
       const saved = localStorage.getItem('theme');
@@ -2138,8 +2162,9 @@ function App() {
         {view === 'curriculum' && <CurriculumView setView={setView} openContact={openContact} />}
         {view === 'news' && <NewsListView setView={setView} posts={posts} loading={loading} />}
         {typeof view === 'object' && view.type === 'post' && <NewsDetailView id={view.id} setView={setView} posts={posts} />}
-        <Footer />
+        <Footer onOpenPrivacy={() => setPrivacyOpen(true)} />
         <ContactModal open={contactOpen} onClose={() => setContactOpen(false)} />
+        {privacyOpen && <PrivacyPolicyModal onClose={() => setPrivacyOpen(false)} />}
       </div>
     </ThemeContext.Provider>
   );
