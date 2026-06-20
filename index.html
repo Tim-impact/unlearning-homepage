@@ -381,6 +381,18 @@ const CONTENT = {
     philosophyQuote: "채우기 위해서는 먼저 비워야 합니다.",
     philosophyBody: "조직의 변화는 새로운 기술을 더 많이 배우는 데서 오지 않습니다.\n지금까지 익숙했던 방식을 먼저 내려놓는 일(unlearning)에서 시작합니다.\n기술이 사람을 대체하는 것이 아니라, 사람이 본연의 미션에 더 깊이 몰입할 수 있도록 돕는 것.\n작은 조직이 더 큰 시스템을 흉내내는 것이 아니라, 자기 사이즈에 맞는 가장 단단한 운영 구조를 갖추는 것.\n우리는 기술을 파는 회사가 아닙니다.\n기술이 작동하는 일하는 방식을 함께 만드는 파트너이자 동료입니다.",
     tags: ["10년차 현장 경험", "현장의 언어로 문제를 진단", "조직에 딱 맞는 적정기술로 반복을 자동화"],
+    whyLabel: "# WHY_WE_STARTED",
+    whyBody:
+      "문제의 뿌리는 하나였습니다 — **연결의 부재.**\n\n" +
+      "일 맡길 조직엔 자원이 없고,\n" +
+      "일 배울 청년에겐 현장이 없었습니다.\n\n" +
+      "우리는 그 둘을 한 프로젝트 안에서 만나게 합니다.\n" +
+      "일은 더 잘 굴러가고, 사람은 현장에서 자랍니다.\n\n" +
+      "오퍼레이션에 진심인 이유는 분명합니다.\n" +
+      "**그것이 결국, 사람을 남기는 일이기 때문입니다.**",
+    whyClose:
+      "— 조직이라는 로켓이 미션이라는 궤도에 오르도록,\n" +
+      "우리는 곁에서 일하는 **추진체**가 되기로 했습니다.",
     team: [
       {
         name: "박정웅",
@@ -1522,6 +1534,48 @@ function PhilosophyBlock({ visible }) {
   );
 }
 
+/* 선언문 리치텍스트 렌더 — "\n" → <br/>, "**강조**" → 포인트색 <strong> */
+function renderRich(text, accent) {
+  return text.split("\n").map((line, li) => (
+    <React.Fragment key={li}>
+      {li > 0 && <br />}
+      {line.split("**").map((seg, si) =>
+        si % 2 === 1
+          ? <strong key={si} style={{ color: accent, fontWeight: 800 }}>{seg}</strong>
+          : seg
+      )}
+    </React.Fragment>
+  ));
+}
+
+/* WHY WE STARTED — 풀블리드 다크 선언문 밴드 (About 마무리) */
+function WhyWeStartedBand({ visible }) {
+  return (
+    <div className="work-hero-band" style={{
+      padding: "clamp(64px, 9vw, 104px) 20px",
+      marginTop: 8,
+      opacity: visible ? 1 : 0,
+      transition: "opacity .6s ease",
+    }}>
+      <div className="aurora aurora-1" />
+      <div className="aurora aurora-2" />
+      <div className="aurora aurora-3" />
+      <div className="hero-grid" />
+      <div style={{ position: "relative", zIndex: 2, maxWidth: 840, margin: "0 auto", textAlign: "center" }}>
+        <div style={{ fontFamily: MONO, fontSize: 14, color: "#00ff88", fontWeight: 700, letterSpacing: ".1em", marginBottom: 28 }}>
+          {CONTENT.about.whyLabel}
+        </div>
+        <p style={{ fontFamily: HEAD, fontSize: "clamp(22px, 3.4vw, 36px)", fontWeight: 700, color: "#f0f6fc", lineHeight: 1.55, wordBreak: "keep-all", margin: 0 }}>
+          {renderRich(CONTENT.about.whyBody, "#00ff88")}
+        </p>
+        <p style={{ fontFamily: HEAD, fontSize: "clamp(15px, 1.8vw, 19px)", fontWeight: 400, color: "#9aa7b8", lineHeight: 1.7, wordBreak: "keep-all", marginTop: 32, marginBottom: 0 }}>
+          {renderRich(CONTENT.about.whyClose, "#22d3ee")}
+        </p>
+      </div>
+    </div>
+  );
+}
+
 /* 팀 카드 목록 — AboutSection에서 분리 */
 function TeamCards({ visible }) {
   const C = useContext(ThemeContext);
@@ -1631,7 +1685,7 @@ function AboutSection() {
           </div>
         </div>
 
-        <TeamCards visible={visible} />
+        <WhyWeStartedBand visible={visible} />
       </div>
     </section>
   );
