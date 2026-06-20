@@ -1,0 +1,10 @@
+# gitleaks 설정 — 기본 룰셋(useDefault)을 그대로 유지하면서,
+# 클라이언트 코드에 노출되어도 안전한 "공개 키"만 예외 처리한다.
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Web3Forms 공개 액세스 키 — index.html 폼 전송용. 클라이언트(브라우저) 코드에 두도록 설계된 키이며 메일 발송만 가능(받은 메일 열람·계정 접근 불가)하여 노출되어도 안전한 false positive."
+regexes = [
+  '''80311b69-1d4d-4ce5-a0df-3bad3cb3aa0d''',
+]

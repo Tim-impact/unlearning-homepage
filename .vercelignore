@@ -1,0 +1,8 @@
+# 공개 배포에 불필요한 내부 문서·작업 파일 (저장소에는 남고, 배포에서만 제외)
+CLAUDE.md
+process.md
+TONE_GUIDE.html
+TONE_GUIDE.md
+.claude/
+inputs/
+.gitleaks.toml
