@@ -412,8 +412,8 @@ const CONTENT = {
     email: "hello@un-learning.co",
     company: "주식회사 언러닝컴퍼니",
     ceo: "박형호",
-    address: "경기도 고양시 덕양구 지정로 110, 108호",
-    bizNumber: "",   // 사업자등록번호 — 발급 후 여기에 입력하면 자동 표기
+    address: "경기도 고양시 덕양구 지정로 110, 상가동 108호",
+    bizNumber: "572-81-04039",   // 사업자등록번호 — 발급 후 여기에 입력하면 자동 표기
   },
 };
 
@@ -2050,7 +2050,7 @@ function Footer({ onOpenPrivacy }) {
       <div className="footer-bizinfo" style={{ maxWidth: 1000, margin: "40px auto 0", fontFamily: SANS, fontSize: 13, fontWeight: 400, color: C.textFaint, lineHeight: 1.95, wordBreak: "keep-all" }}>
         <div>
           <span>{F.company}</span>
-          <Sep /><span>대표 {F.ceo}</span>
+          <Sep /><span>대표이사 {F.ceo}</span>
           {F.bizNumber && <><Sep /><span>사업자등록번호 {F.bizNumber}</span></>}
         </div>
         <div>{F.address}</div>

@@ -3,7 +3,7 @@
 > 진행 상황 현장 일지. 큰 방향(설계도)은 `plan.md`에서 관리한다(아직 미작성).
 > 작업 진행에 따라 자주 갱신한다.
 
-**마지막 업데이트:** 2026-06-20 (About "Why We Started" 터미널 섹션 완료)
+**마지막 업데이트:** 2026-06-24 (푸터 사업자 정보 정식 표기 — 사업자등록번호 추가)
 
 ---
 
@@ -40,6 +40,7 @@
 - [x] **완전 카툰/로우폴리 (v11)** — 지구를 텍스처 폐기 → **로우폴리 행성**(IcosahedronGeometry detail3 non-indexed + 면별 vertexColor: 절차적 대륙 시드 9개로 바다/땅/빙하, MeshLambert flatShading)로 교체, 밝은 ambient로 색 또렷하게, 시안-그린 카툰 글로우. 로켓도 **카툰화**(통통한 동체+빨강 노즈콘+초록 핀+2단 화염, MeshLambert flatShading, scale↑). 라벨 폰트 **Paperlogy 900**(글로우 텍스트섀도)로 변경, 마커 확대. RedFormat 툰램프가 SwiftShader에서 색 왜곡 → Lambert flat로 안정화 (2026-06-20)
 - [x] **툰 지구 + 자산 마커 분리 (v10)** — 지구를 `MeshToonMaterial`(3밴드 램프) + 밝은 시안-그린 대기광 + ambient↑ + 자전 가속으로 **애니메이션풍**(사실감 완화). 궤도 확대(ORB 3.3→3.85)·기울기 완화(rot.x 1.12→0.92)로 4 마커가 지구 실루엣 밖으로 나와 **자산 마커·라벨이 지구와 분리**(지구를 자산으로 마킹한 듯 보이던 문제 해결), 마커 크기↑ (2026-06-20)
 - [x] **진짜 지구 + 궤도 순환 로켓 (v9)** — `Globe3D`를 텍스처 지구로 교체: jsDelivr(CORS) three.js examples의 earth_atmos/specular/normal/clouds 텍스처 + DirectionalLight 낮/밤 명암 + 구름 레이어 + 블루 프레넬 대기광 + 지축 기울기 자전. **드래그 회전 삭제**(자동 자전만). 기울어진 궤도(ring rot.x 1.12)에 4 단계를 동서남북이 아닌 궤도 위 배치(angFor 90/0/-90/-180), **3D 로켓**(원통+노즈콘+핀+화염)이 입구→엔진→자산→확산 순서로 공전(접선 정렬). 라벨은 한글 깨짐 방지 위해 **3D 좌표를 투영한 DOM 텍스트**(+발광 마커). 세로 화면은 카메라 후퇴(fitCamera)로 궤도 수용. 헤드리스 SwiftShader 검증, 가로 스크롤 0 (2026-06-20)
+- [x] **푸터 사업자 정보 정식 표기** — 사업자등록번호 `572-81-04039` 입력(`bizNumber` 채워지면 자동 노출되도록 기설계), 주소 `…지정로 110, 108호` → `…지정로 110, 상가동 108호`, 표기 `대표` → `대표이사`. 보안 점검 병행: 클라이언트 시크릿 노출 없음, Contact 폼은 Web3Forms 공개 키(메일 발송 전용·노출 안전), `vercel.json`에 CSP·HSTS·X-Frame-Options 등 주요 헤더 구비 확인 (2026-06-24)
 - [x] **About 팀 카드 → "Why We Started" 섹션 교체** — 팀원 3명 카드(`TeamCards`)·`CONTENT.about.team` 데이터·`.team-photo` CSS 제거. 그 자리에 "왜 이 일을 시작했는가" 서사 추가. 초기엔 풀블리드 다크 선언문 밴드로 구현했으나 전체 톤에서 튀어, **히어로의 `TerminalWindow` 패턴 재사용**(밝은 터미널 창 + 신호등 헤더 + `$ read why-we-started.md` 프롬프트 + `## unlearning`/`## the-bridge`/`## the-propellant` 섹션 + Pretendard 본문, 핵심 구절 파란색 강조)으로 최종 변경. `# WHY_WE_STARTED` 라벨은 `# HOW_WE_WORK`과 같은 선상 정렬. `**강조**`/`\n` 파싱용 `renderRich` 헬퍼 추가. 팀 사진 에셋은 보존. 브레인스토밍→스펙(`docs/superpowers/specs/`)→계획(`docs/superpowers/plans/`)→서브에이전트 실행. 커밋 `f7f22eb`·`a31f3b7`·`d43143d` (2026-06-20)
 
 ---
