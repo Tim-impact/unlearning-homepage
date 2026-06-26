@@ -244,7 +244,7 @@ const MODULE_COLOR = { A: "#22d3ee", B: "#00b46a", C: "#8b5cf6" };
    SHARED CONSTANTS — 매직 넘버/중복 스타일 중앙화
    ========================================================================== */
 const TIMING = { typingChar: 30, resultChar: 20, resultPause: 200, initialDelay: 400 };
-const SPACING = { sectionY: "120px", sectionYSm: "100px", innerMax: 1000 };
+const SPACING = { sectionTop: "64px", sectionBottom: "96px", innerMax: 1000 };
 function makeStyles(C) {
   return {
     card:   { background: C.bgCard, border: `1px solid ${C.border}`, borderRadius: 10, padding: 28, boxShadow: C.cardShadow },
@@ -252,7 +252,7 @@ function makeStyles(C) {
     // 테두리·그림자 없이 위→아래로 배경(bgSoft)에 녹아드는 카드 — bgSoft 배경 섹션 전용
     softCard: { border: "none", boxShadow: "none", borderRadius: 22, padding: 28,
                 background: `linear-gradient(180deg, ${C.bgHead} 0%, ${C.bgHead} 15%, ${C.bgSoft} 100%)` },
-    section:      (bg) => ({ padding: `${SPACING.sectionY} 20px`, ...(bg ? { background: bg, borderTop: `1px solid ${C.border}` } : {}) }),
+    section:      (bg) => ({ padding: `${SPACING.sectionTop} 20px ${SPACING.sectionBottom}`, ...(bg ? { background: bg, borderTop: `1px solid ${C.border}` } : {}) }),
     inner:  { maxWidth: SPACING.innerMax, margin: "0 auto" },
     fadeIn: (visible, i, delay = 0.12) => ({
       opacity: visible ? 1 : 0,
@@ -883,7 +883,7 @@ function ProblemSection() {
   const C = useContext(ThemeContext);
   const [ref, visible] = useInView();
   return (
-    <section ref={ref} style={{ padding: "100px 20px", background: C.bgSoft, borderTop: `1px solid ${C.border}` }}>
+    <section ref={ref} style={{ padding: "64px 20px 96px", background: C.bgSoft, borderTop: `1px solid ${C.border}` }}>
       <div style={{ maxWidth: 1000, margin: "0 auto" }}>
         <div style={{ fontFamily: MONO, fontSize: 13, color: C.blue, letterSpacing: ".2em", textTransform: "uppercase", marginBottom: 16 }}>// Why It Matters</div>
         <h2 style={{ fontFamily: HEAD, fontSize: "clamp(26px, 4.5vw, 40px)", fontWeight: 700, color: C.textBright, lineHeight: 1.3, marginBottom: 56, wordBreak: "keep-all" }}>
@@ -1177,17 +1177,17 @@ function WorkSection() {
   ];
 
   return (
-    <section id="work" ref={ref} style={{ padding: "84px 20px", background: C.bg, borderTop: `1px solid ${C.border}` }}>
+    <section id="work" ref={ref} style={{ padding: "56px 20px 96px", background: C.bg, borderTop: `1px solid ${C.border}` }}>
       <div style={{ maxWidth: 1180, margin: "0 auto" }}>
         <SectionLabel num="01" text="Work" />
-        <h2 style={{ fontFamily: HEAD, fontSize: "clamp(18px, 4vw, 38px)", fontWeight: 700, color: C.textBright, lineHeight: 1.3, marginBottom: 44, wordBreak: "keep-all" }}>
+        <h2 style={{ fontFamily: HEAD, fontSize: "clamp(18px, 4vw, 38px)", fontWeight: 700, color: C.textBright, lineHeight: 1.3, marginBottom: 24, wordBreak: "keep-all" }}>
           {CONTENT.work.headingLine1}<br />
-          <span style={{ color: C.green, fontSize: "clamp(26px, 4vw, 38px)" }}>{CONTENT.work.headingLine2}</span>
+          <span style={{ color: C.green, fontSize: "clamp(28px, 5vw, 44px)" }}>{CONTENT.work.headingLine2}</span>
         </h2>
 
         <div className="work-layout" style={{ display: "flex", flexDirection: "column", alignItems: "stretch", gap: 0 }}>
           {/* 1단 — 풀블리드 다크 밴드: 오로라 + 도트그리드 + 와이드 3D 지구본 궤도 */}
-          <div className="work-hero-band" style={{ padding: "clamp(48px, 7vw, 84px) 20px clamp(44px, 6vw, 72px)", marginTop: 8, marginBottom: 52, opacity: visible ? 1 : 0, transition: "opacity .6s ease" }}>
+          <div className="work-hero-band" style={{ padding: "clamp(48px, 7vw, 84px) 20px clamp(44px, 6vw, 72px)", marginTop: 0, marginBottom: 52, opacity: visible ? 1 : 0, transition: "opacity .6s ease" }}>
             <div className="aurora aurora-1" />
             <div className="aurora aurora-2" />
             <div className="aurora aurora-3" />
@@ -1260,7 +1260,7 @@ function CurriculumSection() {
   const [openModule, setOpenModule] = useState("B");
 
   return (
-    <section id="curriculum" ref={ref} style={{ padding: "120px 20px", background: `linear-gradient(180deg, ${C.bgSoft} 0%, ${C.bg} 100%)`, borderTop: `1px solid ${C.border}` }}>
+    <section id="curriculum" ref={ref} style={{ padding: "64px 20px 96px", background: `linear-gradient(180deg, ${C.bgSoft} 0%, ${C.bg} 100%)`, borderTop: `1px solid ${C.border}` }}>
       <div style={{ maxWidth: 1000, margin: "0 auto" }}>
         <SectionLabel num="02" text="Curriculum" />
         <h2 style={{ fontFamily: HEAD, fontSize: "clamp(28px, 5vw, 44px)", fontWeight: 700, color: C.textBright, lineHeight: 1.3, marginBottom: 20, wordBreak: "keep-all" }}>
@@ -1328,7 +1328,7 @@ function RecommendedTracksSection({ setView, openContact }) {
   const [hoveredId, setHoveredId] = useState(null);
 
   return (
-    <section id="tracks" ref={ref} style={{ padding: "120px 20px", borderTop: `1px solid ${C.border}` }}>
+    <section id="tracks" ref={ref} style={{ padding: "64px 20px 96px", borderTop: `1px solid ${C.border}` }}>
       <div style={{ maxWidth: 1000, margin: "0 auto" }}>
         <SectionLabel num="03" text="Recommended Tracks" />
         <h2 style={{ fontFamily: HEAD, fontSize: "clamp(28px, 5vw, 44px)", fontWeight: 700, color: C.textBright, lineHeight: 1.3, marginBottom: 20, wordBreak: "keep-all" }}>
@@ -1409,7 +1409,7 @@ function ImpactSection() {
   const impacts = CONTENT.impact.cards.map((c, i) => ({ ...c, color: colors[i] }));
 
   return (
-    <section id="impact" ref={ref} style={{ padding: "120px 20px", maxWidth: 1000, margin: "0 auto" }}>
+    <section id="impact" ref={ref} style={{ padding: "64px 20px 96px", maxWidth: 1000, margin: "0 auto" }}>
       <SectionLabel num="04" text="Social Impact" />
       <h2 style={{ fontFamily: HEAD, fontSize: "clamp(28px, 5vw, 44px)", fontWeight: 700, color: C.textBright, lineHeight: 1.3, marginBottom: 48, wordBreak: "keep-all" }}>
         {CONTENT.impact.headingLine1}<br />
