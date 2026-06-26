@@ -118,8 +118,6 @@
     /* Impact */
     @media (max-width: 860px) {
       .impact-grid { grid-template-columns: 1fr !important; }
-      /* 1열 전환 시 카드가 넓어져도 이미지 전체가 보이도록 — 높이 고정/크롭 해제 */
-      .value-img { height: auto !important; object-fit: contain !important; }
     }
 
     /* News */
@@ -341,32 +339,6 @@ const CONTENT = {
       { num: "시간",   unit: "", title: "조직에 돌려주는 시간",          desc: "낡은 업무 방식을 바꾸며 생긴 시간은, 세상을 바꾸는 일에 다시 쓰입니다." },
       { num: "성장",   unit: "", title: "청년이 자라는 자리",            desc: "책이 아닌 실제 일로 AI를 익혀야 할 청년들이, 현장에서 함께 자랄 자리를 만듭니다." },
       { num: "선순환", unit: "", title: "수익은 다시 사회로",            desc: "수익은 약자를 위한 도구 연구와 청년 교육에 다시 쓰입니다. 우리가 만든 변화가, 다음 사람에게로 이어집니다." },
-    ],
-  },
-
-  // ⑤ 핵심 가치 섹션
-  coreValues: {
-    headingLine1: "언러닝컴퍼니가",
-    headingLine2: "일하는 방식",
-    items: [
-      {
-        icon: "①",
-        title: "시스템으로 일합니다",
-        desc: "개인의 분투에 기대지 않습니다. 좋은 구조는 누구나 성과를 내고 성장하게 합니다.",
-        color: "#00ff88",
-      },
-      {
-        icon: "②",
-        title: "방향 있는 성장을 합니다.",
-        desc: "기술이 얼마나 효과적인지 보다, 조직의 미션에 보탬이 되는지를 먼저 묻습니다.",
-        color: "#22d3ee",
-      },
-      {
-        icon: "③",
-        title: "배운 것은 다시 나눕니다",
-        desc: "프로젝트에서 익힌 방법을 정리해 남깁니다. 동료 임팩트 조직이 더 나은 출발선에 설 수 있도록!",
-        color: "#a78bfa",
-      },
     ],
   },
 
@@ -1208,9 +1180,9 @@ function WorkSection() {
     <section id="work" ref={ref} style={{ padding: "84px 20px", background: C.bg, borderTop: `1px solid ${C.border}` }}>
       <div style={{ maxWidth: 1180, margin: "0 auto" }}>
         <SectionLabel num="01" text="Work" />
-        <h2 style={{ fontFamily: HEAD, fontSize: "clamp(26px, 4vw, 38px)", fontWeight: 700, color: C.textBright, lineHeight: 1.3, marginBottom: 44, wordBreak: "keep-all" }}>
+        <h2 style={{ fontFamily: HEAD, fontSize: "clamp(18px, 4vw, 38px)", fontWeight: 700, color: C.textBright, lineHeight: 1.3, marginBottom: 44, wordBreak: "keep-all" }}>
           {CONTENT.work.headingLine1}<br />
-          <span style={{ color: C.green }}>{CONTENT.work.headingLine2}</span>
+          <span style={{ color: C.green, fontSize: "clamp(26px, 4vw, 38px)" }}>{CONTENT.work.headingLine2}</span>
         </h2>
 
         <div className="work-layout" style={{ display: "flex", flexDirection: "column", alignItems: "stretch", gap: 0 }}>
@@ -1462,36 +1434,6 @@ function ImpactSection() {
   );
 }
 
-function CoreValuesSection() {
-  const C = useContext(ThemeContext);
-  const [ref, visible] = useInView();
-  return (
-    <section ref={ref} style={{ padding: "120px 20px", background: C.bgSoft, borderTop: `1px solid ${C.border}` }}>
-      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
-        <SectionLabel num="05" text="Our Values" />
-        <h2 style={{ fontFamily: HEAD, fontSize: "clamp(28px, 5vw, 44px)", fontWeight: 700, color: C.textBright, lineHeight: 1.3, marginBottom: 48, wordBreak: "keep-all" }}>
-          {CONTENT.coreValues.headingLine1}<br />
-          <span style={{ color: C.orange }}>{CONTENT.coreValues.headingLine2}</span>
-        </h2>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24 }} className="impact-grid">
-          {CONTENT.coreValues.items.map((item, i) => (
-            <div key={i} style={{
-              background: C.bgCard, border: `1px solid ${C.border}`, borderTop: `3px solid ${item.color}`,
-              borderRadius: 10, padding: 32, boxShadow: C.cardShadow,
-              opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(24px)",
-              transition: `all .5s ease ${i * 0.15}s`
-            }}>
-              <div style={{ fontFamily: MONO, fontSize: 28, color: item.color, marginBottom: 16 }}>{item.icon}</div>
-              <h3 style={{ fontFamily: SANS, fontSize: 19, fontWeight: 700, color: C.textBright, marginBottom: 12, wordBreak: "keep-all" }}>{item.title}</h3>
-              <p style={{ fontFamily: SANS, fontSize: 16, fontWeight: 400, color: C.textDim, lineHeight: 1.75, wordBreak: "keep-all" }}>{item.desc}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
 /* 철학 블록 — AboutSection에서 분리 */
 function PhilosophyBlock({ visible }) {
   const C = useContext(ThemeContext);
@@ -1597,35 +1539,6 @@ function AboutSection() {
         </div>
 
         <PhilosophyBlock visible={visible} />
-
-        {/* How We Work */}
-        <div style={{ marginBottom: 56 }}>
-          <div style={{ fontFamily: MONO, fontSize: 14, color: C.textDim, fontWeight: 700, marginBottom: 28, letterSpacing: ".1em" }}># HOW_WE_WORK</div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }} className="impact-grid">
-            {CONTENT.coreValues.items.map((item, i) => (
-              <div key={i} style={{
-                ...STYLES.softCard, overflow: "hidden",
-                display: "flex", flexDirection: "column",
-                ...STYLES.fadeIn(visible, i, 0.1),
-                transitionDelay: `${0.3 + i * 0.1}s`,
-              }}>
-                <h3 style={{ fontFamily: SANS, fontSize: 17, fontWeight: 700, color: C.textBright, marginBottom: 10, wordBreak: "keep-all" }}>{item.title}</h3>
-                <p style={{ fontFamily: SANS, fontSize: 15, fontWeight: 400, color: C.textDim, lineHeight: 1.7, marginBottom: 24, wordBreak: "keep-all" }}>{item.desc}</p>
-                {/* 실사 이미지(Unsplash, 무료 상업용) — 0:Unsplash, 1:Jamie Street, 2:Annie Spratt */}
-                <div style={{
-                  position: "relative", marginTop: "auto",
-                  width: "calc(100% + 56px)", marginLeft: -28, marginRight: -28, marginBottom: -28,
-                }}>
-                  <img
-                    src={["assets/img/value-system.jpg", "assets/img/value-direction.jpg", "assets/img/value-share.jpg"][i]}
-                    alt="" loading="lazy" className="value-img"
-                    style={{ display: "block", width: "100%", height: 172, objectFit: "cover" }}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
 
         <WhyWeStartedBand visible={visible} />
       </div>
