@@ -15,22 +15,27 @@ export default defineType({
       name: 'section',
       title: '메뉴 구분',
       type: 'string',
-      description: 'News(공지사항) / Blog(후기·칼럼 등 콘텐츠) 중 어느 메뉴에 노출할지',
-      options: {
-        list: [
-          {title: 'News — 공지사항', value: 'news'},
-          {title: 'Blog — 콘텐츠(후기·칼럼 등)', value: 'blog'},
-        ],
-        layout: 'radio',
-      },
+      // News/Blog 목록에서 새 글을 만들 때 자동 지정되므로 에디터에서는 숨김
+      hidden: true,
       initialValue: 'news',
-      validation: (Rule) => Rule.required().error('메뉴 구분을 선택하세요'),
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'category',
       title: '태그',
-      type: 'string',
-      description: '카드에 표시되는 작은 분류 (예: 공지, 후기, 칼럼, 인터뷰) — 선택',
+      type: 'array',
+      of: [{type: 'string'}],
+      description: '카드에 표시되는 분류. 정해진 목록에서 여러 개 선택할 수 있습니다 (선택).',
+      options: {
+        list: [
+          {title: '공지', value: '공지'},
+          {title: '안내', value: '안내'},
+          {title: '후기', value: '후기'},
+          {title: '칼럼', value: '칼럼'},
+          {title: '인터뷰', value: '인터뷰'},
+          {title: '사례', value: '사례'},
+        ],
+      },
     }),
     defineField({
       name: 'publishedAt',
@@ -43,7 +48,8 @@ export default defineType({
       name: 'mainImage',
       title: '대표 이미지',
       type: 'image',
-      description: '목록 카드와 상세 상단에 보이는 썸네일 (선택)',
+      description:
+        '목록 카드·상세 상단에 보이는 썸네일 (선택). 권장 크기: 가로 1600 × 세로 900 (16:9 비율), 가로 최소 1200px, 용량 2MB 이하.',
       options: {hotspot: true},
     }),
     defineField({
@@ -61,10 +67,13 @@ export default defineType({
   ],
   preview: {
     select: {title: 'title', section: 'section', category: 'category', media: 'mainImage'},
-    prepare: ({title, section, category, media}) => ({
-      title,
-      subtitle: [section === 'blog' ? 'Blog' : 'News', category].filter(Boolean).join(' · '),
-      media,
-    }),
+    prepare: ({title, section, category, media}) => {
+      const tags = Array.isArray(category) ? category.join(', ') : category
+      return {
+        title,
+        subtitle: [section === 'blog' ? 'Blog' : 'News', tags].filter(Boolean).join(' · '),
+        media,
+      }
+    },
   },
 })
