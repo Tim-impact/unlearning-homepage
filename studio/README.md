@@ -1,7 +1,7 @@
 # 언러닝컴퍼니 블로그 관리자 (Sanity Studio)
 
 홈페이지 **Blog**에 노출되는 글을 작성·관리하는 내부 어드민입니다.
-DB는 Sanity 프로젝트 `77kdc69b` / dataset `production`.
+DB는 Sanity 프로젝트 `n6aij3q3` / dataset `production`.
 
 ---
 
@@ -31,7 +31,7 @@ npm run deploy       # 주소(hostname) 한 번 정하면 됨
 # → https://[정한이름].sanity.studio 로 접속 가능
 ```
 
-동료 초대: <https://www.sanity.io/manage> → 프로젝트 `77kdc69b` →
+동료 초대: <https://www.sanity.io/manage> → 프로젝트 `n6aij3q3` →
 **Members → Invite members** 에서 동료 이메일 추가 (역할 Editor면 글쓰기 가능).
 초대받은 동료는 위 `*.sanity.studio` 주소로 로그인해 글을 씁니다.
 
@@ -40,7 +40,7 @@ npm run deploy       # 주소(hostname) 한 번 정하면 됨
 ## ⚠️ 홈페이지 Blog에 글이 안 보일 때 (중요)
 
 Studio 작성과 별개로, **공개 홈페이지(un-learning.co)가 Sanity를 읽으려면 CORS 허용**이 필요합니다.
-<https://www.sanity.io/manage> → 프로젝트 `77kdc69b` → **API → CORS Origins → Add** 에서 아래를 추가하세요
+<https://www.sanity.io/manage> → 프로젝트 `n6aij3q3` → **API → CORS Origins → Add** 에서 아래를 추가하세요
 (`Allow credentials`는 체크 해제):
 
 - `https://un-learning.co`

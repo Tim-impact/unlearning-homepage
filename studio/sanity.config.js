@@ -7,7 +7,7 @@ export default defineConfig({
   name: 'default',
   title: '언러닝컴퍼니 블로그',
 
-  projectId: '77kdc69b',
+  projectId: 'n6aij3q3',
   dataset: 'production',
 
   plugins: [structureTool(), visionTool()],
