@@ -397,7 +397,7 @@ const SANITY_DATASET = 'production';
 
 async function fetchSanityPosts() {
   const query = encodeURIComponent(
-    '*[_type == "post"] | order(publishedAt desc) {_id, title, publishedAt, "category": categories[0]->title, mainImage, body}'
+    '*[_type == "post"] | order(publishedAt desc) {_id, title, publishedAt, section, "category": coalesce(category, categories[0]->title), mainImage, body}'
   );
   const url = `https://${SANITY_PROJECT_ID}.api.sanity.io/v2024-01-01/data/query/${SANITY_DATASET}?query=${query}`;
   const res = await fetch(url);
@@ -634,15 +634,17 @@ function Nav({ view, setView, scrollToSection, openContact, theme, toggleTheme }
               </button>
             );
           })}
-          <button onClick={() => { setView('news'); window.scrollTo(0,0); }} style={{
-              background: "none", border: "none", cursor: "pointer",
-              fontFamily: MONO, fontSize: 14, color: view === 'news' || (typeof view === 'object' && view.type === 'post') ? C.green : C.textDim, transition: "color .2s", letterSpacing: "0.05em"
-            }}
-            onMouseEnter={e => e.target.style.color = C.green}
-            onMouseLeave={e => { if(view !== 'news' && !(typeof view === 'object' && view.type === 'post')) e.target.style.color = C.textDim; }}
-          >
-            Blog
-          </button>
+          {['news','blog'].map(sec => (
+            <button key={sec} onClick={() => { setView(sec); window.scrollTo(0,0); }} style={{
+                background: "none", border: "none", cursor: "pointer",
+                fontFamily: MONO, fontSize: 14, color: view === sec ? C.green : C.textDim, transition: "color .2s", letterSpacing: "0.05em"
+              }}
+              onMouseEnter={e => e.target.style.color = C.green}
+              onMouseLeave={e => { if(view !== sec) e.target.style.color = C.textDim; }}
+            >
+              {sec === 'news' ? 'News' : 'Blog'}
+            </button>
+          ))}
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
@@ -700,13 +702,15 @@ function Nav({ view, setView, scrollToSection, openContact, theme, toggleTheme }
               </button>
             );
           })}
-          <button onClick={() => { setMenuOpen(false); setView('news'); window.scrollTo(0,0); }} style={{
-            background: "none", border: "none", cursor: "pointer",
-            fontFamily: MONO, fontSize: 22, color: C.textBright, letterSpacing: "0.05em",
-            padding: "12px 0", width: "100%", textAlign: "center"
-          }}>
-            Blog
-          </button>
+          {['news','blog'].map(sec => (
+            <button key={sec} onClick={() => { setMenuOpen(false); setView(sec); window.scrollTo(0,0); }} style={{
+              background: "none", border: "none", cursor: "pointer",
+              fontFamily: MONO, fontSize: 22, color: C.textBright, letterSpacing: "0.05em",
+              padding: "12px 0", width: "100%", textAlign: "center"
+            }}>
+              {sec === 'news' ? 'News' : 'Blog'}
+            </button>
+          ))}
           <button onClick={() => { setMenuOpen(false); toggleTheme(); }} style={{
             background: "none", border: "none", cursor: "pointer",
             fontFamily: MONO, fontSize: 18, color: C.textDim, letterSpacing: "0.05em",
@@ -1838,35 +1842,43 @@ function NewsCard({ post, setView }) {
   );
 }
 
-function NewsListView({ setView, posts, loading }) {
+const SECTION_META = {
+  news: { eyebrow: '// Notice', heading: 'News', desc: '언러닝컴퍼니의 공지사항과 소식을 전합니다.', empty: '아직 등록된 공지가 없습니다.' },
+  blog: { eyebrow: '// Archive', heading: 'Blog', desc: '콘텐츠 후기, 칼럼 등 우리가 쌓아온 기록을 모았습니다.', empty: '아직 게시된 글이 없습니다.' },
+};
+
+function PostListView({ section, setView, posts, loading }) {
   const C = useContext(ThemeContext);
+  const meta = SECTION_META[section] || SECTION_META.news;
   if (loading) return (
     <div style={{ paddingTop: "120px", minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
       <div style={{ fontFamily: SANS, fontSize: 14, color: C.textDim }}>불러오는 중...</div>
     </div>
   );
 
+  const list = posts.filter(p => (p.section || 'news') === section);
+
   return (
     <div style={{ paddingTop: "120px", paddingBottom: "120px", minHeight: "100vh", animation: "fadeInUp 0.5s ease" }}>
       <div style={{ maxWidth: 1000, margin: "0 auto", padding: "0 20px" }}>
 
         <div style={{ fontFamily: MONO, fontSize: 12, color: C.green, letterSpacing: ".2em", textTransform: "uppercase", marginBottom: 16 }}>
-          // Narrative
+          {meta.eyebrow}
         </div>
         <h1 style={{ fontFamily: HEAD, fontSize: "clamp(32px, 5vw, 48px)", fontWeight: 900, color: C.textBright, marginBottom: 16 }}>
-          Blog
+          {meta.heading}
         </h1>
         <p style={{ fontFamily: SANS, fontSize: 17, fontWeight: 300, color: C.textDim, marginBottom: 60, lineHeight: 1.6 }}>
-          익숙한 것을 잊고 새로운 것을 잇는 언러닝컴퍼니의 여정을 기록합니다.
+          {meta.desc}
         </p>
 
-        {posts.length === 0 ? (
+        {list.length === 0 ? (
           <div style={{ textAlign: "center", padding: "80px 0", fontFamily: MONO, fontSize: 14, color: C.textDim }}>
-            아직 게시된 글이 없습니다.
+            {meta.empty}
           </div>
         ) : (
           <div className="news-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24 }}>
-            {posts.map((post) => (
+            {list.map((post) => (
               <NewsCard key={post._id} post={post} setView={setView} />
             ))}
           </div>
@@ -1892,7 +1904,7 @@ function NewsDetailView({ id, setView, posts }) {
       <div style={{ maxWidth: 800, margin: "0 auto", padding: "0 20px" }}>
 
         {/* 뒤로 가기 버튼 */}
-        <button onClick={() => { setView('news'); window.scrollTo(0,0); }} style={{
+        <button onClick={() => { setView(post.section === 'blog' ? 'blog' : 'news'); window.scrollTo(0,0); }} style={{
           background: "none", border: "none", color: C.textDim, fontFamily: MONO, fontSize: 13,
           cursor: "pointer", display: "flex", alignItems: "center", gap: 8, marginBottom: 40, transition: "color 0.2s"
         }} onMouseEnter={e => e.target.style.color = C.green} onMouseLeave={e => e.target.style.color = C.textDim}>
@@ -1926,7 +1938,7 @@ function NewsDetailView({ id, setView, posts }) {
 
         {/* 하단 다시 목록으로 */}
         <div style={{ textAlign: "center" }}>
-          <button onClick={() => { setView('news'); window.scrollTo(0,0); }} style={{
+          <button onClick={() => { setView(post.section === 'blog' ? 'blog' : 'news'); window.scrollTo(0,0); }} style={{
             background: "transparent", border: `1px solid ${C.borderBright}`, color: C.textBright, fontFamily: SANS, fontSize: 15, fontWeight: 500,
             padding: "12px 32px", borderRadius: 6, cursor: "pointer", transition: "all 0.2s"
           }} onMouseEnter={e => { e.target.style.background = C.bgCard; e.target.style.borderColor = C.textDim; }} onMouseLeave={e => { e.target.style.background = "transparent"; e.target.style.borderColor = C.borderBright; }}>
@@ -2000,7 +2012,7 @@ function parseHash(h) {
   if (!raw) return 'home';
   const [seg, val] = raw.split('/');
   if (seg === 'post' && val) return { type: 'post', id: decodeURIComponent(val) };
-  if (seg === 'curriculum' || seg === 'news') return seg;
+  if (seg === 'curriculum' || seg === 'news' || seg === 'blog') return seg;
   return 'home';
 }
 
@@ -2072,7 +2084,8 @@ function App() {
         <Nav view={view} setView={setView} scrollToSection={scrollToSection} openContact={openContact} theme={theme} toggleTheme={toggleTheme} />
         {view === 'home' && <MainView setView={setView} />}
         {view === 'curriculum' && <CurriculumView setView={setView} openContact={openContact} />}
-        {view === 'news' && <NewsListView setView={setView} posts={posts} loading={loading} />}
+        {view === 'news' && <PostListView section="news" setView={setView} posts={posts} loading={loading} />}
+        {view === 'blog' && <PostListView section="blog" setView={setView} posts={posts} loading={loading} />}
         {typeof view === 'object' && view.type === 'post' && <NewsDetailView id={view.id} setView={setView} posts={posts} />}
         <Footer onOpenPrivacy={() => setPrivacyOpen(true)} />
         <ContactModal open={contactOpen} onClose={() => setContactOpen(false)} />

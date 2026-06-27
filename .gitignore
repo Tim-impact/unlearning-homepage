@@ -1,2 +1,5 @@
 # 작업용 소스 자료 (배포 사이트에 불필요)
 inputs/
+
+# macOS
+.DS_Store

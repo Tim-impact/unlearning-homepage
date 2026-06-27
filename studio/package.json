@@ -1,0 +1,19 @@
+{
+  "name": "unlearning-blog-studio",
+  "private": true,
+  "version": "1.0.0",
+  "description": "언러닝컴퍼니 블로그 관리자 (Sanity Studio)",
+  "type": "module",
+  "scripts": {
+    "dev": "sanity dev",
+    "build": "sanity build",
+    "deploy": "sanity deploy"
+  },
+  "dependencies": {
+    "@sanity/vision": "^6.2.0",
+    "react": "^19.2.2",
+    "react-dom": "^19.2.2",
+    "sanity": "^6.2.0",
+    "styled-components": "^6.1.15"
+  }
+}
