@@ -2210,17 +2210,15 @@ function App() {
 
   // 화면 전환에 맞춰 브라우저 탭 제목 갱신
   useEffect(() => {
-    const base = '언러닝컴퍼니 | Unlearning Company';
-    let title = base;
     if (typeof view === 'object' && view.type === 'post') {
       const p = posts.find(x => String(x.postNumber) === String(view.id) || x._id === view.id);
-      if (p) title = `${p.title} | 언러닝컴퍼니`;
-    } else if (view === 'news' || view === 'blog') {
-      title = 'Story | 언러닝컴퍼니';
-    } else if (view === 'curriculum') {
-      title = '커리큘럼 | 언러닝컴퍼니';
+      if (p) document.title = `${p.title} | 언러닝컴퍼니`;
+      // 로딩 중(아직 글 못 찾음)이면 함수가 주입한 글 제목을 유지 — 덮어쓰지 않음
+      return;
     }
-    document.title = title;
+    if (view === 'news' || view === 'blog') document.title = 'Story | 언러닝컴퍼니';
+    else if (view === 'curriculum') document.title = '커리큘럼 | 언러닝컴퍼니';
+    else document.title = '언러닝컴퍼니 | Unlearning Company';
   }, [view, posts]);
 
   const scrollToSection = (id) => {
