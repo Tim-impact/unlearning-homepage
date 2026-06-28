@@ -2208,6 +2208,21 @@ function App() {
       .finally(() => setLoading(false));
   }, []);
 
+  // 화면 전환에 맞춰 브라우저 탭 제목 갱신
+  useEffect(() => {
+    const base = '언러닝컴퍼니 | Unlearning Company';
+    let title = base;
+    if (typeof view === 'object' && view.type === 'post') {
+      const p = posts.find(x => String(x.postNumber) === String(view.id) || x._id === view.id);
+      if (p) title = `${p.title} | 언러닝컴퍼니`;
+    } else if (view === 'news' || view === 'blog') {
+      title = 'Story | 언러닝컴퍼니';
+    } else if (view === 'curriculum') {
+      title = '커리큘럼 | 언러닝컴퍼니';
+    }
+    document.title = title;
+  }, [view, posts]);
+
   const scrollToSection = (id) => {
     if (view !== 'home') {
       setView('home');
