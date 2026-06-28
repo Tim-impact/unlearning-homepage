@@ -3,7 +3,7 @@
 > 진행 상황 현장 일지. 큰 방향(설계도)은 `plan.md`에서 관리한다(아직 미작성).
 > 작업 진행에 따라 자주 갱신한다.
 
-**마지막 업데이트:** 2026-06-28 (푸터 상단 초록 CTA 밴드 신설 — gowid 풍, 헤더 "함께 자라기"와 동일 액션)
+**마지막 업데이트:** 2026-06-28 (PR #2 — Story 게시판 + Sanity 연동 — 로컬 main에 병합 완료, 푸터는 정본 유지·검증. push·CORS 보류)
 
 ---
 
@@ -47,28 +47,34 @@
 - [x] **섹션 세로 리듬 비대칭 재설계 (A안)** — 구분선(`borderTop`)이 240px 빈 공간 한가운데 고립돼 어느 섹션에도 안 붙던 문제. 모든 섹션 패딩을 **상단 64 / 하단 96**(Work는 밴드 보정으로 상단 56)으로 통일 → 구분선이 아래 섹션 텍스트에 붙어 소속이 또렷해지고, 섹션 간 총 간격 240→160px로 축소. `SPACING` 토큰을 `sectionY:120`(+미사용 `sectionYSm`) → `sectionTop:64`/`sectionBottom:96`으로 교체하고 `STYLES.section` 헬퍼를 비대칭으로 변경(About 자동 반영), 나머지 5개 섹션은 인라인 수정. (직전의 Why It Matters 100→120은 이 작업으로 64로 대체됨) (2026-06-26)
 - [x] **초록 키워드 크기를 표준 섹션 헤더에 맞춤** — "AX 오퍼레이션 파트너" span 크기를 `clamp(26px, 4vw, 38px)` → `clamp(28px, 5vw, 44px)`로 변경. 02 Curriculum·03 Tracks·04 Impact·05 About 섹션 헤더와 동일값. line1("성장을…하는")은 모바일 1행 유지 위해 `clamp(18px, 4vw, 38px)` 그대로 (2026-06-26)
 - [x] **미사용 잔재 정리** — 위 삭제로 드러난 죽은 코드/자산 제거: ① 어디서도 렌더링되지 않던 `CoreValuesSection` 컴포넌트, ② 그에 따라 완전히 미사용이 된 `CONTENT.coreValues` 데이터(`// ⑤ 핵심 가치 섹션`), ③ 고아가 된 실사 이미지 3개(`assets/img/value-system.jpg`·`value-direction.jpg`·`value-share.jpg`). 데이터 주석 번호는 ④→⑥로 ⑤가 비지만 무관 주석 재정렬은 보류 (2026-06-26)
+- [x] **소개 문구 SEO·GEO 최적화 + 구글 검색 등록** — Tim이 Google Search Console 등록·색인 요청 완료. 검색에 보이는 3개 슬롯을 역할별로 차등 개편(동일 문장 통일 X): ① `meta description`(스니펫) "가치·고객 중심" 톤(고객 선택) — 미션 몰입 혜택 앞배치 + 키워드(AI 전환·워크플로우 자동화·적정기술·AX 오퍼레이션 파트너), ② `og:description`(공유 카드) 한 줄 정돈, ③ `JSON-LD description`(GEO/AI 검색) 회사명(국문+영문)·대상·방법·범위·카테고리 완결 문장. 커밋 `59d5d16`, 프로덕션 배포 완료. (남은 것: Tim의 Google 비즈니스 프로필 등록 — 지식 패널/정보 카드 통제용) (2026-06-28)
 - [x] **푸터 상단 초록 CTA 밴드 신설(gowid 풍)** — 푸터와 직전 섹션(About) 사이 경계를, 첨부 이미지(gowid)처럼 **풀블리드 초록 밴드**로 교체. `FooterCTA` 컴포넌트 신설, `App`에서 `<Footer>` 바로 앞에 렌더(모든 뷰 공통). 배경 `C.green`(헤더 "함께 자라기" 버튼과 동일색), 좌측 메인카피("함께 도전하고 싶은 일이 있다면 편하게 이야기를 시작해요.")+서브("현장에서 함께 일해 온 동료로서…"), 우측 흰 버튼 "함께 자라기 →"는 헤더와 **동일 표기·동일 액션(`openContact` 모달)**. 텍스트색은 헤더 버튼처럼 `C.bg`로 두어 라이트(흰 글자/녹색)·다크(검은 글자/형광녹색) 대비 자동 대응. 문구는 `CONTENT.footerCta`로 분리. 밴드가 경계 역할을 하도록 **푸터의 `borderTop`(얇은 선) 제거**. 모바일(≤768px)은 `.footer-cta` 세로 stack. 콘텐츠 폭 `maxWidth:1000`으로 아래 푸터와 좌우 정렬 일치 (2026-06-28)
 - [x] **푸터 우측 링크 3종 규격 통일** — `개인정보처리방침` 버튼을 `회사소개서`·`패밀리 사이트` 링크와 동일 형식으로: 밑줄(`textDecoration:underline`+`textUnderlineOffset`) 제거→`none`, 끝에 `↗` 추가. 이로써 우측 묶음 3행(`회사소개서 ↗` / `패밀리 사이트 · 조직학교 이니셔티브 ↗` / `개인정보처리방침 ↗`)이 SANS 13px·`textDim`·`hover-green`·`↗`로 완전히 동일. (참고: `↗`는 본래 외부 새 탭 이동 신호이고 개인정보처리방침은 모달이라 의미상 차이가 있으나, 시각 규격 통일이 사용자 요청이라 적용) (2026-06-28)
 - [x] **푸터 세로 간격·행간 정리** — ① 경계선↔로고 간격 축소(`footer` 상단 패딩 `60→40px`). ② 태그라인↔회사명 간격 축소(`footer-bizinfo` 상단 마진 `40→24px`). ③ 회사 정보 블록 행간 통일·안정화: `lineHeight 1.95→1.7`, 이메일 줄에만 있던 `marginTop:2`(리듬 깨짐) 제거, 우측 묶음 `개인정보처리방침` 버튼에 `lineHeight:"inherit"` 지정해 좌우 행 높이 일치. 폰트는 좌우 모두 SANS 13px로 이미 통일돼 있어 유지 (2026-06-28)
 - [x] **푸터에 회사소개서·패밀리 사이트 링크 추가 + 사업자등록번호 줄바꿈 + 우측 2단 배치** — ① 사업자등록번호 `572-81-04039`를 `회사명 | 대표이사`와 같은 줄에서 떼어 독립 줄로 이동(`Sep` 구분자 제거). ② URL을 `CONTENT.footer`에 `brochureUrl`(Google Drive `/view` 공유 링크 — 새 탭 미리보기→다운로드)·`familySite{label,url}`(org-school.me)로 분리. ③ `footer-bizinfo`를 좌(사업자 정보)/우(링크) 2단 flex(`justify-content:space-between`, `align-items:flex-start`)로 재구성: 우측 컬럼에 `회사소개서 ↗` / `패밀리 사이트 · 조직학교 이니셔티브 ↗` / `개인정보처리방침`을 세로로 쌓고 우측 정렬(`flex-end`). 우측 묶음 시작점이 좌측 첫 줄(회사명·대표이사)과 같은 높이에 정렬됨. **개인정보처리방침은 맨 아랫줄(`footer-bottom`)에서 이 우측 묶음으로 이동**(SANS 13px로 통일, underline 유지). 외부 링크 2개는 `target="_blank" rel="noopener noreferrer"` + `↗` + `hover-green`. 모바일(≤768px)은 `.footer-bizinfo` 세로 stack + `.footer-links` 좌측 정렬로 전환. 배치·소개서 링크 방식·패밀리 표기는 객관식 확인 후 진행 (2026-06-28)
 - [x] **About 팀 카드 → "Why We Started" 섹션 교체** — 팀원 3명 카드(`TeamCards`)·`CONTENT.about.team` 데이터·`.team-photo` CSS 제거. 그 자리에 "왜 이 일을 시작했는가" 서사 추가. 초기엔 풀블리드 다크 선언문 밴드로 구현했으나 전체 톤에서 튀어, **히어로의 `TerminalWindow` 패턴 재사용**(밝은 터미널 창 + 신호등 헤더 + `$ read why-we-started.md` 프롬프트 + `## unlearning`/`## the-bridge`/`## the-propellant` 섹션 + Pretendard 본문, 핵심 구절 파란색 강조)으로 최종 변경. `# WHY_WE_STARTED` 라벨은 `# HOW_WE_WORK`과 같은 선상 정렬. `**강조**`/`\n` 파싱용 `renderRich` 헬퍼 추가. 팀 사진 에셋은 보존. 브레인스토밍→스펙(`docs/superpowers/specs/`)→계획(`docs/superpowers/plans/`)→서브에이전트 실행. 커밋 `f7f22eb`·`a31f3b7`·`d43143d` (2026-06-20)
+- [x] **Story 게시판(News·Blog) + Sanity CMS 연동 — PR #2 로컬 병합** — `feat/blog-studio`(PR #2, by bropumpkin)를 로컬 `main`에 병합(merge-tree 사전검증 충돌 0, 실제 병합 충돌 0). 네비 `Blog`→`Story` 단일 메뉴 + News/Blog 탭 전환, 목록 18개(3×6)+`더보기 N/총계` 페이지네이션, 글 상세 공유 버튼(URL 클립보드 복사·중앙 토스트), 태그 다중표시(`category` 배열, 구버전 문자열/참조 자동 호환 `getTags`), 본문 렌더 개선(빈 문단 제거·nbsp 치환·가로잘림 `overflowWrap`). Sanity 프로젝트 `77kdc69b`(production dataset 없음=깨짐)→`n6aij3q3`(글 데이터 정상)로 교체. `studio/` 신규(Sanity Studio 6.1.0 + `post` 스키마: 제목(필수)·메뉴구분(자동·hidden)·태그(공지/안내/후기/칼럼/인터뷰/사례)·발행일(필수)·대표이미지(16:9)·본문 + Content를 News/Blog로 분리하는 structure). **푸터: PR 재작성본 폐기, 현재 index.html(main)이 정본** — 병합 결과 Footer 컴포넌트가 main 푸터와 글자단위 동일함을 `diff`로 검증(FooterCTA 초록 밴드 포함, PR 흔적·중복 정의 0). `.gitignore`는 `inputs/`·`.vercel`·`.DS_Store` 모두 반영. **아직 push 안 함** — 로컬 main이 origin/main보다 7커밋 앞섬 (2026-06-28)
+- [x] **Story 페이지 `// Narrative` 라벨 삭제** — `StoryView` 제목 위 초록 모노 라벨(`<div>// Narrative</div>`) 블록 제거. 이제 Story 제목 → 설명 → News/Blog 탭 순으로 시작. (병합분 위 추가 수정, 아직 미커밋) (2026-06-28)
 
 ---
 
 ## 현재 진행 중
 
-- (없음) — About "Why We Started" 터미널 섹션 완료·커밋
+- PR #2 로컬 병합 완료. push·라이브 배포는 **보류** — 아래 블로커(Sanity CORS) 해소 후 진행
 
 ---
 
 ## 다음 할 일 (즉시 착수 예정)
 
+- [ ] (Tim) Sanity 콘솔에서 운영 도메인 `https://un-learning.co` **CORS 허용 등록** — 미등록 시 라이브에서 게시판 데이터 미로딩 (로컬 테스트 도메인만 등록된 상태)
+- [ ] CORS 등록 후 `git push` → Vercel 라이브 배포 + 게시판 실제 로딩 검증
 - [ ] 사용자 피드백 반영 (필요 시)
 
 ---
 
 ## 블로커 · 보류 사항
 
+- **게시판 라이브 동작 전제조건(외부 설정)**: Sanity `n6aij3q3`에 `https://un-learning.co` CORS 등록 필요 — 미등록 시 push해도 라이브 게시판이 빈 채로 뜸. CSP(`connect-src https:`)는 Sanity 호출 허용하므로 CSP는 문제 아님
 - `plan.md` 미작성 — 전체 계획·우선순위·의존관계 정리 필요
-- 미커밋 항목: `CLAUDE.md`(프로젝트 메모리), `brand/`(슬랙 채널 아이콘 에셋) — git untracked 상태
-- 실제 브라우저 픽셀 렌더 검증 미완 — 작업 환경에서 브라우저 설치에 root 권한 필요 (코드 트랜스파일·파싱 검증은 통과)
+- 미커밋 항목: `CLAUDE.md`·`AGENTS.md`(프로젝트 메모리), `brand/`(슬랙 채널 아이콘 에셋), `assets/how-we-work.png`·`assets/team-소개.png`, `.gitignore`(`.vercel` 추가) — git untracked/unstaged 상태
+- 실제 브라우저 픽셀 렌더 검증 미완 — 작업 환경에서 브라우저 설치에 root 권한 필요 (코드 트랜스파일·파싱 검증은 통과). 단 file:// 로컬 열람 시 Sanity CORS(Origin null 미등록)로 게시판 데이터는 안 보일 수 있음 — 레이아웃만 확인 가능
