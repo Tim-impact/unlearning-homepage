@@ -2014,7 +2014,7 @@ function NewsDetailView({ id, setView, posts }) {
 
         {/* 뒤로 가기 버튼 */}
         <button onClick={() => { setView(post.section === 'blog' ? 'blog' : 'news'); window.scrollTo(0,0); }} style={{
-          background: "none", border: "none", color: C.textDim, fontFamily: MONO, fontSize: 13,
+          background: "none", border: "none", color: C.textDim, fontFamily: SANS, fontSize: 13,
           cursor: "pointer", display: "flex", alignItems: "center", gap: 8, marginBottom: 40, transition: "color 0.2s"
         }} onMouseEnter={e => e.target.style.color = C.green} onMouseLeave={e => e.target.style.color = C.textDim}>
           <span>←</span> <span>목록으로 돌아가기</span>
