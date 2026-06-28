@@ -29,11 +29,12 @@ export default defineType({
       options: {
         list: [
           {title: '공지', value: '공지'},
-          {title: '안내', value: '안내'},
+          {title: '프로그램', value: '프로그램'},
           {title: '후기', value: '후기'},
           {title: '칼럼', value: '칼럼'},
           {title: '인터뷰', value: '인터뷰'},
           {title: '사례', value: '사례'},
+          {title: '일기', value: '일기'},
         ],
       },
     }),
