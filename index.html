@@ -2,6 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
+  <base href="/" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="naver-site-verification" content="76c21ae472cc197173f8a516a1b94c53b1bfadb2" />
   <title>언러닝컴퍼니 | Unlearning Company</title>
@@ -2142,10 +2143,12 @@ function serializeView(v) {
   if (v.type === 'post') return '/post/' + encodeURIComponent(v.id);
   return '/';
 }
-function parseHash(h) {
-  const raw = (h || '').replace(/^#\/?/, '');
-  if (!raw) return 'home';
-  const [seg, val] = raw.split('/');
+function parseLocation() {
+  // 경로(path) 우선 — 레거시 해시 링크(#/post/1, #news)도 호환
+  let path = window.location.pathname.replace(/^\/+/, '');
+  if (!path && window.location.hash) path = window.location.hash.replace(/^#\/?/, '');
+  if (!path) return 'home';
+  const [seg, val] = path.split('/');
   if (seg === 'post' && val) return { type: 'post', id: decodeURIComponent(val) };
   if (seg === 'story') return 'news';
   if (seg === 'curriculum' || seg === 'news' || seg === 'blog') return seg;
@@ -2153,14 +2156,14 @@ function parseHash(h) {
 }
 
 function App() {
-  const [view, setViewState] = useState(() => parseHash(window.location.hash));
+  const [view, setViewState] = useState(() => parseLocation());
   const setView = (v) => {
     const target = serializeView(v);
-    if (('#' + target) !== window.location.hash) {
-      window.location.hash = target;
-    } else {
-      setViewState(v);
+    if (target !== window.location.pathname) {
+      window.history.pushState(null, '', target);
     }
+    setViewState(v);
+    window.scrollTo(0, 0);
   };
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -2186,9 +2189,13 @@ function App() {
   const toggleTheme = () => setTheme(t => t === 'dark' ? 'light' : 'dark');
 
   useEffect(() => {
-    const onHashChange = () => { setViewState(parseHash(window.location.hash)); window.scrollTo(0, 0); };
-    window.addEventListener('hashchange', onHashChange);
-    return () => window.removeEventListener('hashchange', onHashChange);
+    // 레거시 해시 링크(#/post/1)로 들어오면 깔끔한 경로로 교체 (새 페이지 로드 없이 주소만 정리)
+    if (window.location.hash) {
+      window.history.replaceState(null, '', serializeView(parseLocation()));
+    }
+    const onPop = () => { setViewState(parseLocation()); window.scrollTo(0, 0); };
+    window.addEventListener('popstate', onPop);
+    return () => window.removeEventListener('popstate', onPop);
   }, []);
 
   useEffect(() => {
