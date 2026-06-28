@@ -127,6 +127,9 @@
     /* Footer */
     @media (max-width: 768px) {
       .footer-bottom { flex-direction: column; gap: 8px; }
+      .footer-bizinfo { flex-direction: column; }
+      .footer-links { align-items: flex-start !important; text-align: left !important; }
+      .footer-cta { flex-direction: column; align-items: flex-start !important; }
     }
 
     /* Hover utilities — replaces inline onMouseEnter/Leave DOM manipulation */
@@ -378,6 +381,13 @@ const CONTENT = {
     subtext: "\"새로운 사업에 도전하고 싶은데 함께할 손이 부족해요.\" \"우리 조직도 AI로 일하는 방식을 바꾸고 싶어요.\"\n무엇이든, 지금 떠오르는 고민을 들려주세요.\n현장에서 함께 일해 온 동료로서 직접 듣고, 함께 자랄 방법을 찾아가겠습니다.",
   },
 
+  // ⑥-2 푸터 상단 CTA 밴드 (헤더 "함께 자라기" 버튼과 동일 액션·표기)
+  footerCta: {
+    heading: "함께 도전하고 싶은 일이 있다면 편하게 이야기를 시작해요.",
+    sub: "현장에서 함께 일해 온 동료로서 직접 듣고, 함께 자랄 방법을 찾아가겠습니다.",
+    cta: "함께 자라기 →",
+  },
+
   // ⑦ 푸터
   footer: {
     tagline: "세상을 바꾸는 사람들이 미션에만 몰입할 수 있도록.",
@@ -386,6 +396,8 @@ const CONTENT = {
     ceo: "박형호",
     address: "경기도 고양시 덕양구 지정로 110, 상가동 108호",
     bizNumber: "572-81-04039",   // 사업자등록번호 — 발급 후 여기에 입력하면 자동 표기
+    brochureUrl: "https://drive.google.com/file/d/1NDw1FlI6y5o6wC-HwR7ImwAX7DUF7Jw6/view?usp=sharing",
+    familySite: { label: "조직학교 이니셔티브", url: "https://org-school.me" },
   },
 };
 
@@ -1942,12 +1954,32 @@ function NewsDetailView({ id, setView, posts }) {
 /* ==========================================================================
    FOOTER
    ========================================================================== */
+function FooterCTA({ onOpenContact }) {
+  const C = useContext(ThemeContext);
+  const T = CONTENT.footerCta;
+  return (
+    <section style={{ background: C.green }}>
+      <div className="footer-cta" style={{ maxWidth: 1000, margin: "0 auto", padding: "clamp(28px, 4vw, 40px) 28px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 24 }}>
+        <div style={{ wordBreak: "keep-all" }}>
+          <div style={{ fontFamily: HEAD, fontSize: "clamp(19px, 2.4vw, 25px)", fontWeight: 800, color: C.bg, lineHeight: 1.35 }}>{T.heading}</div>
+          <div style={{ fontFamily: SANS, fontSize: "clamp(13px, 1.5vw, 15px)", color: C.bg, opacity: .85, lineHeight: 1.6, marginTop: 10 }}>{T.sub}</div>
+        </div>
+        <button onClick={onOpenContact} style={{ fontFamily: HEAD, fontSize: 15, fontWeight: 700, color: C.green, background: C.bg, border: "none", borderRadius: 4, padding: "15px 30px", whiteSpace: "nowrap", cursor: "pointer", transition: "all .2s" }}
+          onMouseEnter={e => { e.currentTarget.style.background = "#D1FF97"; e.currentTarget.style.color = "#000"; }}
+          onMouseLeave={e => { e.currentTarget.style.background = C.bg; e.currentTarget.style.color = C.green; }}>
+          {T.cta}
+        </button>
+      </div>
+    </section>
+  );
+}
+
 function Footer({ onOpenPrivacy }) {
   const C = useContext(ThemeContext);
   const F = CONTENT.footer;
   const Sep = () => <span style={{ margin: "0 9px", opacity: .45 }}>|</span>;
   return (
-    <footer style={{ borderTop: `1px solid ${C.border}`, padding: "60px 28px 40px", background: C.name === 'light' ? C.bgSoft : C.bgCard }}>
+    <footer style={{ padding: "40px 28px 40px", background: C.name === 'light' ? C.bgSoft : C.bgCard }}>
       <div style={{ maxWidth: 1000, margin: "0 auto", display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 32 }}>
         <div>
           <div style={{ marginBottom: 12, display: "flex", alignItems: "center" }}>
@@ -1959,28 +1991,28 @@ function Footer({ onOpenPrivacy }) {
         </div>
       </div>
 
-      {/* 사업자 정보 — 표준 표기 (사업자등록번호는 bizNumber 입력 시 자동 노출) */}
-      <div className="footer-bizinfo" style={{ maxWidth: 1000, margin: "40px auto 0", fontFamily: SANS, fontSize: 13, fontWeight: 400, color: C.textFaint, lineHeight: 1.95, wordBreak: "keep-all" }}>
+      {/* 사업자 정보 (좌) + 자료·패밀리 사이트·정책 링크 (우) */}
+      <div className="footer-bizinfo" style={{ maxWidth: 1000, margin: "24px auto 0", display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 24, fontFamily: SANS, fontSize: 13, fontWeight: 400, color: C.textFaint, lineHeight: 1.7, wordBreak: "keep-all" }}>
         <div>
-          <span>{F.company}</span>
-          <Sep /><span>대표이사 {F.ceo}</span>
-          {F.bizNumber && <><Sep /><span>사업자등록번호 {F.bizNumber}</span></>}
+          <div>
+            <span>{F.company}</span>
+            <Sep /><span>대표이사 {F.ceo}</span>
+          </div>
+          {F.bizNumber && <div>사업자등록번호 {F.bizNumber}</div>}
+          <div>{F.address}</div>
+          <div>
+            이메일 <a href={`mailto:${F.email}`} style={{ color: C.textDim, textDecoration: "none" }}>{F.email}</a>
+          </div>
         </div>
-        <div>{F.address}</div>
-        <div style={{ marginTop: 2 }}>
-          이메일 <a href={`mailto:${F.email}`} style={{ color: C.textDim, textDecoration: "none" }}>{F.email}</a>
+        <div className="footer-links" style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", textAlign: "right" }}>
+          <a className="hover-green" href={F.brochureUrl} target="_blank" rel="noopener noreferrer" style={{ color: C.textDim, textDecoration: "none" }}>회사소개서 ↗</a>
+          <span><span style={{ opacity: .55 }}>패밀리 사이트 · </span><a className="hover-green" href={F.familySite.url} target="_blank" rel="noopener noreferrer" style={{ color: C.textDim, textDecoration: "none" }}>{F.familySite.label} ↗</a></span>
+          <button type="button" onClick={onOpenPrivacy} className="hover-green" style={{ background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: SANS, fontSize: 13, lineHeight: "inherit", color: C.textDim, textDecoration: "none" }}>개인정보처리방침 ↗</button>
         </div>
       </div>
 
       <div className="footer-bottom" style={{ maxWidth: 1000, margin: "32px auto 0", paddingTop: 24, borderTop: `1px dashed ${C.border}`, display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 12, fontFamily: MONO, fontSize: 12, color: C.textFaint }}>
         <div>© 2026 unlearning company. All rights reserved.</div>
-        <button
-          type="button"
-          onClick={onOpenPrivacy}
-          style={{ background: "none", border: "none", padding: 0, margin: 0, cursor: "pointer", fontFamily: MONO, fontSize: 12, color: C.textDim, textDecoration: "underline", textUnderlineOffset: 3 }}
-        >
-          개인정보처리방침
-        </button>
       </div>
     </footer>
   );
@@ -2074,6 +2106,7 @@ function App() {
         {view === 'curriculum' && <CurriculumView setView={setView} openContact={openContact} />}
         {view === 'news' && <NewsListView setView={setView} posts={posts} loading={loading} />}
         {typeof view === 'object' && view.type === 'post' && <NewsDetailView id={view.id} setView={setView} posts={posts} />}
+        <FooterCTA onOpenContact={openContact} />
         <Footer onOpenPrivacy={() => setPrivacyOpen(true)} />
         <ContactModal open={contactOpen} onClose={() => setContactOpen(false)} />
         {privacyOpen && <PrivacyPolicyModal onClose={() => setPrivacyOpen(false)} />}
