@@ -3,7 +3,7 @@
 > 진행 상황 현장 일지. 큰 방향(설계도)은 `plan.md`에서 관리한다(아직 미작성).
 > 작업 진행에 따라 자주 갱신한다.
 
-**마지막 업데이트:** 2026-06-29 (Story 콘텐츠 가독성·스타일 다듬기 일괄 배포 + Sanity 태그 목록 변경(안내 삭제, 프로그램·일기 추가) → `unlearning-story.sanity.studio` 재배포 완료)
+**마지막 업데이트:** 2026-06-29 (게시글 URL을 난수 ID → 작성순 고정 번호(postNumber)로 전환 — Studio 필드 추가·backfill·재배포 + 홈페이지 배포·라이브 검증 완료)
 
 ---
 
@@ -58,6 +58,7 @@
 - [x] **배포 — main push + Vercel 운영 배포 + 라이브 검증** — 로컬 main(9커밋)을 `origin/main`에 push(`56090cc..f01d86d`)해 PR #2 통합. `vercel --prod`로 운영 배포, `https://un-learning.co` alias 연결(`dpl_3oQEdJvxcffaYoro6EwYo9F6dW8U`). **라이브 검증(Playwright)**: un-learning.co/#story에서 콘솔 에러 0건, News 탭에 Sanity 글 1건 정상 로드(이미지·`공지` 태그·2026.06.27), 푸터 정본·`// Narrative` 삭제 확인. **Sanity CORS 추가 등록 불필요** — 임의 `*.vercel.app` 프리뷰와 운영 도메인 모두에서 데이터 로딩됨(n6aij3q3 CORS가 이미 광범위 허용). (2026-06-28)
 - [x] **Story 콘텐츠 가독성·스타일 다듬기 (배포 후 반복 — 모두 운영 배포·라이브 검증)** — ① 설명문구 '잊고/잇는/여정' 초록볼드 → 이후 문장 전체 검은볼드(`C.textBright`/700). ② 목록 카드: 본문 요약 제거(제목만 노출), 제목 18→16px, 미사용 `getSummary` 정리. ③ 상세 제목 `clamp(28,4vw,40)`→`clamp(22,3vw,30)`. ④ 상세 본문: 행간 1.9→1.75·자간 -0.01em·본문 17px·헤딩 행간 1.4, 문단 `marginBottom` 18→0(문단 간격을 줄바꿈 행간과 동일하게 통일). ⑤ 상세 대표 이미지 `height 360+cover`(잘림)→`height auto`(전체 노출). ⑥ Sanity 빈 문단(에디터 엔터 2번)을 빈 줄(1.4em)로 렌더+연속은 1개로 합침(기존엔 빈 블록을 버려 빈 줄이 사라졌음). ⑦ 상세 '← 목록으로 돌아가기' 버튼 폰트 MONO→Pretendard. (2026-06-29)
 - [x] **Sanity 태그 목록 변경 + Studio 재배포** — `studio/schemaTypes/post.js`의 `category` 옵션에서 '안내' 삭제, '프로그램'·'일기' 추가(최종: 공지·프로그램·후기·칼럼·인터뷰·사례·일기). `sanity deploy` 성공(schemas 1/1) → `unlearning-story.sanity.studio` 반영. **환경 메모(중요)**: Sanity CLI는 Node ≥22.12 필요하나 환경 기본 node=v18 → nvm으로 Node 22 설치(`nvm alias default 22`). WSL `/mnt/c`에서 node_modules 로딩이 극도로 느려(`sanity --version`도 타임아웃) **studio 소스를 리눅스 네이티브 경로 `~/ulc-studio`로 복사**해 거기서 `npm install`·`sanity login`(google)·`sanity deploy` 실행. **향후 태그/스키마 변경 절차**: 레포 `studio/schemaTypes/` 수정 → `~/ulc-studio/schemaTypes/`로 복사 → `~/ulc-studio`에서 `sanity deploy`. 주의: 기존 글에 저장된 태그 문자열은 자동 변경 안 됨(에디터에서 재선택 필요). (2026-06-29)
+- [x] **게시글 URL: 난수 ID → 작성순 고정 번호(postNumber)** — 요청 핵심: 번호가 한번 부여되면 글 삭제에도 불변(이전 공유링크가 다른 글 안 가리키게). 정렬로 계산하면 삭제 시 밀리므로 **번호를 저장**하는 방식으로 구현. ① Sanity `post`에 `postNumber`(number·readOnly) 필드 추가 — 새 글은 `현재 최대+1` 자동부여(`initialValue` async에서 `getClient`로 max+1 조회), 프리뷰에 `#N` 표기. ② 기존 글 backfill: `~/ulc-studio/backfill-postnumber.js`를 `sanity exec --with-user-token`으로 실행, `_createdAt` 오름차순으로 번호 부여(현재 글 → #1). ③ Studio 재배포. ④ 홈페이지: GROQ에 `postNumber` 추가, 카드 클릭·공유 링크를 `post.postNumber||post._id`로 생성(`/post/1`), 상세는 `String(postNumber)===id || _id===id`로 조회 → **옛 UUID 공유링크도 폴백 동작**. 라이브 검증: `/post/1` 직접접속·카드클릭 모두 정상(콘솔 0). (2026-06-29)
 
 ---
 
