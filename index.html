@@ -1779,7 +1779,7 @@ function PortableText({ blocks }) {
     }
     if (block._type !== 'block') return null;
     const children = (block.children || []).map((child, j) => {
-      const text = child.text || '';
+      const text = (child.text || '').replace(/\u00a0/g, ' ');
       if (!text) return null;
       const marks = child.marks || [];
       const style = {};
@@ -1796,7 +1796,7 @@ function PortableText({ blocks }) {
       if (href) return <a key={j} href={href} target="_blank" rel="noopener noreferrer" style={{ color: C.green, textDecoration: 'underline', ...style }}>{text}</a>;
       return <span key={j} style={style}>{text}</span>;
     });
-    const base = { fontFamily: SANS, lineHeight: 1.9, marginBottom: 20, wordBreak: 'keep-all' };
+    const base = { fontFamily: SANS, lineHeight: 1.9, marginBottom: 20, wordBreak: 'keep-all', overflowWrap: 'break-word' };
     switch (block.style) {
       case 'h1': return <h1 key={i} style={{ ...base, fontSize: 32, fontWeight: 700, color: C.textBright, marginTop: 40 }}>{children}</h1>;
       case 'h2': return <h2 key={i} style={{ ...base, fontSize: 26, fontWeight: 700, color: C.textBright, marginTop: 32 }}>{children}</h2>;
