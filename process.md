@@ -3,7 +3,7 @@
 > 진행 상황 현장 일지. 큰 방향(설계도)은 `plan.md`에서 관리한다(아직 미작성).
 > 작업 진행에 따라 자주 갱신한다.
 
-**마지막 업데이트:** 2026-06-28 (PR #2 — Story 게시판 + Sanity 연동 — 로컬 main에 병합 완료, 푸터는 정본 유지·검증. push·CORS 보류)
+**마지막 업데이트:** 2026-06-28 (PR #2 — Story 게시판 + Sanity 연동 — main push·운영 배포 완료. un-learning.co 라이브에서 게시판 로딩·푸터 정본·`// Narrative` 삭제 검증 완료. CORS 추가 등록 불필요)
 
 ---
 
@@ -54,27 +54,26 @@
 - [x] **푸터에 회사소개서·패밀리 사이트 링크 추가 + 사업자등록번호 줄바꿈 + 우측 2단 배치** — ① 사업자등록번호 `572-81-04039`를 `회사명 | 대표이사`와 같은 줄에서 떼어 독립 줄로 이동(`Sep` 구분자 제거). ② URL을 `CONTENT.footer`에 `brochureUrl`(Google Drive `/view` 공유 링크 — 새 탭 미리보기→다운로드)·`familySite{label,url}`(org-school.me)로 분리. ③ `footer-bizinfo`를 좌(사업자 정보)/우(링크) 2단 flex(`justify-content:space-between`, `align-items:flex-start`)로 재구성: 우측 컬럼에 `회사소개서 ↗` / `패밀리 사이트 · 조직학교 이니셔티브 ↗` / `개인정보처리방침`을 세로로 쌓고 우측 정렬(`flex-end`). 우측 묶음 시작점이 좌측 첫 줄(회사명·대표이사)과 같은 높이에 정렬됨. **개인정보처리방침은 맨 아랫줄(`footer-bottom`)에서 이 우측 묶음으로 이동**(SANS 13px로 통일, underline 유지). 외부 링크 2개는 `target="_blank" rel="noopener noreferrer"` + `↗` + `hover-green`. 모바일(≤768px)은 `.footer-bizinfo` 세로 stack + `.footer-links` 좌측 정렬로 전환. 배치·소개서 링크 방식·패밀리 표기는 객관식 확인 후 진행 (2026-06-28)
 - [x] **About 팀 카드 → "Why We Started" 섹션 교체** — 팀원 3명 카드(`TeamCards`)·`CONTENT.about.team` 데이터·`.team-photo` CSS 제거. 그 자리에 "왜 이 일을 시작했는가" 서사 추가. 초기엔 풀블리드 다크 선언문 밴드로 구현했으나 전체 톤에서 튀어, **히어로의 `TerminalWindow` 패턴 재사용**(밝은 터미널 창 + 신호등 헤더 + `$ read why-we-started.md` 프롬프트 + `## unlearning`/`## the-bridge`/`## the-propellant` 섹션 + Pretendard 본문, 핵심 구절 파란색 강조)으로 최종 변경. `# WHY_WE_STARTED` 라벨은 `# HOW_WE_WORK`과 같은 선상 정렬. `**강조**`/`\n` 파싱용 `renderRich` 헬퍼 추가. 팀 사진 에셋은 보존. 브레인스토밍→스펙(`docs/superpowers/specs/`)→계획(`docs/superpowers/plans/`)→서브에이전트 실행. 커밋 `f7f22eb`·`a31f3b7`·`d43143d` (2026-06-20)
 - [x] **Story 게시판(News·Blog) + Sanity CMS 연동 — PR #2 로컬 병합** — `feat/blog-studio`(PR #2, by bropumpkin)를 로컬 `main`에 병합(merge-tree 사전검증 충돌 0, 실제 병합 충돌 0). 네비 `Blog`→`Story` 단일 메뉴 + News/Blog 탭 전환, 목록 18개(3×6)+`더보기 N/총계` 페이지네이션, 글 상세 공유 버튼(URL 클립보드 복사·중앙 토스트), 태그 다중표시(`category` 배열, 구버전 문자열/참조 자동 호환 `getTags`), 본문 렌더 개선(빈 문단 제거·nbsp 치환·가로잘림 `overflowWrap`). Sanity 프로젝트 `77kdc69b`(production dataset 없음=깨짐)→`n6aij3q3`(글 데이터 정상)로 교체. `studio/` 신규(Sanity Studio 6.1.0 + `post` 스키마: 제목(필수)·메뉴구분(자동·hidden)·태그(공지/안내/후기/칼럼/인터뷰/사례)·발행일(필수)·대표이미지(16:9)·본문 + Content를 News/Blog로 분리하는 structure). **푸터: PR 재작성본 폐기, 현재 index.html(main)이 정본** — 병합 결과 Footer 컴포넌트가 main 푸터와 글자단위 동일함을 `diff`로 검증(FooterCTA 초록 밴드 포함, PR 흔적·중복 정의 0). `.gitignore`는 `inputs/`·`.vercel`·`.DS_Store` 모두 반영. **아직 push 안 함** — 로컬 main이 origin/main보다 7커밋 앞섬 (2026-06-28)
-- [x] **Story 페이지 `// Narrative` 라벨 삭제** — `StoryView` 제목 위 초록 모노 라벨(`<div>// Narrative</div>`) 블록 제거. 이제 Story 제목 → 설명 → News/Blog 탭 순으로 시작. (병합분 위 추가 수정, 아직 미커밋) (2026-06-28)
+- [x] **Story 페이지 `// Narrative` 라벨 삭제** — `StoryView` 제목 위 초록 모노 라벨(`<div>// Narrative</div>`) 블록 제거. 이제 Story 제목 → 설명 → News/Blog 탭 순으로 시작. 커밋 `06d5de6` (2026-06-28)
+- [x] **배포 — main push + Vercel 운영 배포 + 라이브 검증** — 로컬 main(9커밋)을 `origin/main`에 push(`56090cc..f01d86d`)해 PR #2 통합. `vercel --prod`로 운영 배포, `https://un-learning.co` alias 연결(`dpl_3oQEdJvxcffaYoro6EwYo9F6dW8U`). **라이브 검증(Playwright)**: un-learning.co/#story에서 콘솔 에러 0건, News 탭에 Sanity 글 1건 정상 로드(이미지·`공지` 태그·2026.06.27), 푸터 정본·`// Narrative` 삭제 확인. **Sanity CORS 추가 등록 불필요** — 임의 `*.vercel.app` 프리뷰와 운영 도메인 모두에서 데이터 로딩됨(n6aij3q3 CORS가 이미 광범위 허용). (2026-06-28)
 
 ---
 
 ## 현재 진행 중
 
-- PR #2 로컬 병합 완료. push·라이브 배포는 **보류** — 아래 블로커(Sanity CORS) 해소 후 진행
+- (없음) — Story 게시판(News·Blog) + Sanity 연동 배포·라이브 검증 완료
 
 ---
 
 ## 다음 할 일 (즉시 착수 예정)
 
-- [ ] (Tim) Sanity 콘솔에서 운영 도메인 `https://un-learning.co` **CORS 허용 등록** — 미등록 시 라이브에서 게시판 데이터 미로딩 (로컬 테스트 도메인만 등록된 상태)
-- [ ] CORS 등록 후 `git push` → Vercel 라이브 배포 + 게시판 실제 로딩 검증
 - [ ] 사용자 피드백 반영 (필요 시)
 
 ---
 
 ## 블로커 · 보류 사항
 
-- **게시판 라이브 동작 전제조건(외부 설정)**: Sanity `n6aij3q3`에 `https://un-learning.co` CORS 등록 필요 — 미등록 시 push해도 라이브 게시판이 빈 채로 뜸. CSP(`connect-src https:`)는 Sanity 호출 허용하므로 CSP는 문제 아님
+- (해소됨) **Sanity CORS** — 당초 운영 도메인 등록 필요로 보였으나, 임의 `*.vercel.app` 프리뷰와 `un-learning.co` 운영 도메인 모두에서 게시판 데이터가 로딩됨 → n6aij3q3 CORS가 이미 광범위 허용 상태. 추가 등록 불필요
+- (해소됨) **라이브 렌더 검증** — Playwright로 un-learning.co/#story 직접 확인(콘솔 에러 0건, Sanity 글 로드, 푸터·Narrative 반영). 단 로컬 `file://` 직접 열람은 Origin이 `null`이라 게시판 데이터가 안 보일 수 있음(레이아웃만 확인 가능) — 데이터 확인은 배포본/로컬서버로
 - `plan.md` 미작성 — 전체 계획·우선순위·의존관계 정리 필요
-- 미커밋 항목: `CLAUDE.md`·`AGENTS.md`(프로젝트 메모리), `brand/`(슬랙 채널 아이콘 에셋), `assets/how-we-work.png`·`assets/team-소개.png`, `.gitignore`(`.vercel` 추가) — git untracked/unstaged 상태
-- 실제 브라우저 픽셀 렌더 검증 미완 — 작업 환경에서 브라우저 설치에 root 권한 필요 (코드 트랜스파일·파싱 검증은 통과). 단 file:// 로컬 열람 시 Sanity CORS(Origin null 미등록)로 게시판 데이터는 안 보일 수 있음 — 레이아웃만 확인 가능
+- 미커밋 항목: `CLAUDE.md`·`AGENTS.md`(프로젝트 메모리), `brand/`(슬랙 채널 아이콘 에셋), `assets/how-we-work.png`·`assets/team-소개.png` — git untracked 상태(홈페이지 미참조, 배포 무관)
