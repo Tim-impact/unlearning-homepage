@@ -21,6 +21,22 @@ export default defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: 'postNumber',
+      title: '글 번호',
+      type: 'number',
+      readOnly: true,
+      description:
+        '작성 순서대로 자동 부여되는 고유 번호 (URL에 사용). 한번 부여되면 다른 글을 삭제해도 바뀌지 않습니다.',
+      // 새 글 생성 시 "현재 최대 번호 + 1"을 자동 부여 → 이후 읽기전용으로 고정
+      initialValue: async (_, context) => {
+        const client = context.getClient({apiVersion: '2024-01-01'})
+        const max = await client.fetch(
+          '*[_type == "post" && defined(postNumber)] | order(postNumber desc)[0].postNumber',
+        )
+        return (max || 0) + 1
+      },
+    }),
+    defineField({
       name: 'category',
       title: '태그',
       type: 'array',
@@ -67,12 +83,14 @@ export default defineType({
     },
   ],
   preview: {
-    select: {title: 'title', section: 'section', category: 'category', media: 'mainImage'},
-    prepare: ({title, section, category, media}) => {
+    select: {title: 'title', section: 'section', category: 'category', media: 'mainImage', postNumber: 'postNumber'},
+    prepare: ({title, section, category, media, postNumber}) => {
       const tags = Array.isArray(category) ? category.join(', ') : category
       return {
         title,
-        subtitle: [section === 'blog' ? 'Blog' : 'News', tags].filter(Boolean).join(' · '),
+        subtitle: [postNumber ? `#${postNumber}` : null, section === 'blog' ? 'Blog' : 'News', tags]
+          .filter(Boolean)
+          .join(' · '),
         media,
       }
     },
