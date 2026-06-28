@@ -1778,6 +1778,9 @@ function PortableText({ blocks }) {
       );
     }
     if (block._type !== 'block') return null;
+    // 붙여넣기로 들어온 빈 문단은 건너뛴다 (간격이 들쭉날쭉해지는 원인)
+    const hasText = (block.children || []).some(c => (c.text || '').replace(/\u00a0/g, ' ').trim() !== '');
+    if (!hasText) return null;
     const children = (block.children || []).map((child, j) => {
       const text = (child.text || '').replace(/\u00a0/g, ' ');
       if (!text) return null;
