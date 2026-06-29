@@ -1819,7 +1819,7 @@ function PortableText({ blocks }) {
           if (def && def._type === 'link') href = def.href;
         }
       });
-      if (href) return <a key={j} href={href} target="_blank" rel="noopener noreferrer" style={{ color: C.green, textDecoration: 'underline', ...style }}>{text}</a>;
+      if (href && /^(https?:|mailto:)/i.test(String(href).trim())) return <a key={j} href={href} target="_blank" rel="noopener noreferrer" style={{ color: C.green, textDecoration: 'underline', ...style }}>{text}</a>;
       return <span key={j} style={style}>{text}</span>;
     });
     const base = { fontFamily: SANS, lineHeight: 1.75, marginBottom: 0, letterSpacing: '-0.01em', wordBreak: 'keep-all', overflowWrap: 'break-word' };
