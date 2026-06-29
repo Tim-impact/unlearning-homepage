@@ -68,6 +68,7 @@
 - [x] **보안 점검 + 게시판 보안 검증** — 게시판(Sanity) 추가 관련 집중 점검. **결과: 심각 위험 없음.** ✅ Sanity 데이터셋 **쓰기 보호 확인**(비인증 create → 403 insufficient permissions; 읽기만 공개), 클라이언트·함수·설정에 **시크릿 노출 없음**(.env 미커밋), XSS 차단(React 이스케이프·함수 출력 `esc()`·raw HTML 주입 경로 없음), 보안 헤더(CSP·HSTS·X-Frame-Options 등) 구비. 권고사항은 아래 항목에서 조치. (2026-06-29)
 - [x] **게시글 SEO/GEO 강화** — ① **크롤러용 본문 주입**: `api/post.js`가 `/post/N`에 `<noscript>` 본문 + BlogPosting JSON-LD(headline·datePublished·image·author·`articleBody`) 주입 → JS 미실행 크롤러·AI봇도 본문/구조화데이터 읽음(기존엔 본문이 JS 렌더라 비가시였음). ② **글별 메타 설명**: og/meta description을 통일 서브카피 → **본문 요약**으로 교체(중복 설명 해소). ③ **동적 sitemap**: `api/sitemap.js` 신설(정적 페이지 + 전체 `/post/N` 포함), 정적 `sitemap.xml` 제거 후 `/sitemap.xml`→함수 rewrite. 라이브 검증: `/post/1`에 본문·JSON-LD·글별 설명 확인, `/sitemap.xml`에 글 포함, 사람 화면 정상(중복·에러 0). (2026-06-29)
 - [x] **보안 권고 조치(하드닝)** — ① PortableText 링크 스킴 검증(`http(s)`·`mailto`만 anchor, `javascript:` 등 차단). ② CSP `connect-src` `'self' https:`(전체 허용) → **Sanity·GA·Web3Forms 도메인만 화이트리스트**. ③ 함수 GROQ 입력에서 따옴표·역슬래시 제거(쿼리 인젝션 방지). 라이브 검증: 강화 후에도 Sanity 데이터 200·GA 204·이미지 200 정상, CSP 차단 0. (남은 권고: CSP `'unsafe-eval'`은 Babel standalone 필요로 유지 — 추후 빌드 도입 시 제거 가능) (2026-06-29)
+- [x] **팀 공유용 점검 리포트 작성** — 보안·SEO·GEO 점검 내용/이유/효과/조치를 정리한 Markdown 문서 `docs/security-seo-geo-review-2026-06.md` 생성(Notion/Slack 붙여넣기·저장소 이력용). 필요 시 브랜드 스타일 PDF/HTML 변환 가능. (2026-06-29)
 
 ---
 
