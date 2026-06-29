@@ -1,6 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
+    { "source": "/sitemap.xml", "destination": "/api/sitemap" },
     { "source": "/post/:id", "destination": "/api/post?id=:id" },
     { "source": "/(news|blog|story|curriculum)", "destination": "/index.html" }
   ],
