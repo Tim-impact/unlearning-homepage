@@ -3,7 +3,7 @@
 > 진행 상황 현장 일지. 큰 방향(설계도)은 `plan.md`에서 관리한다(아직 미작성).
 > 작업 진행에 따라 자주 갱신한다.
 
-**마지막 업데이트:** 2026-06-29 (라우팅을 해시(#) → History API 경로 방식으로 전환 — 주소창 클린 URL(/post/1, /news 등). 전 경로 직접접속·새로고침·뒤로가기·레거시해시 검증 완료)
+**마지막 업데이트:** 2026-06-29 (헤더 메뉴 앵커 스크롤 위치 보정 — Work·About 클릭 시 제목 가림 해소, 윗 공백 최소화(scroll-margin-top 24px). 배포·검증 완료)
 
 ---
 
@@ -62,6 +62,7 @@
 - [x] **게시글별 OG(공유 미리보기) + 상세 로딩 깜빡임 제거** — ① 깜빡임: 상세에서 posts 로딩 중 `!post`라 "게시글을 찾을 수 없습니다"가 잠깐 떴음 → `NewsDetailView`에 `loading` 전달, 로딩 중엔 "불러오는 중..." 표시 후에만 not-found 판단. ② 글별 OG: SPA가 해시(`#/post/N`) 라우팅이라 카카오톡/페북 크롤러(# 무시·JS 미실행)가 글을 식별 못함 → **경로형 공유주소 + 서버리스 함수** 도입. `api/post.js`(Vercel 함수): `/post/N` 요청 시 Sanity에서 글 조회 후 글별 OG HTML 반환(og:title=글 제목, og:image=대표이미지 cdn 1200×630 crop, og:description=통일 서브카피 "언러닝컴퍼니 | 사회혁신조직이 미션에만 몰입할 수 있도록.") → 크롤러는 OG 읽고, 사람은 `location.replace('/#/post/N')`로 SPA 이동. `vercel.json`에 `/post/:id`→`/api/post?id=:id` rewrite. 공유 버튼은 경로형(`/post/N`) 복사로 변경. 크롤러관점 검증: `curl /post/1`이 글 제목·이미지·서브카피 OG 정상 반환(200), 브라우저 `/post/1`→`#/post/1` 리다이렉트·글 렌더 정상. **메모**: og:image는 1200×630 crop이라 세로 포스터는 상하 일부 잘릴 수 있음(스키마 권장은 16:9). 필요시 `api/post.js`의 `fit=crop`을 조정. (2026-06-29)
 - [x] **해시(#) 라우팅 → History API 경로 라우팅 (클린 URL)** — 주소창에서 `#` 제거(`/post/1`, `/news`, `/blog`, `/curriculum`). ① `parseHash`→`parseLocation`(pathname 우선·레거시 해시 `#/post/1` 호환), `setView`는 `history.pushState`+`setViewState`+scrollTop, `hashchange`→`popstate` 리스너, 로드 시 레거시 해시는 `replaceState`로 깔끔한 경로 정리. ② `<base href="/">` 추가 — `/post/1` 등 깊은 경로에서 폰트(@font-face)·이미지(상대경로) 정상 로드. ③ `api/post.js`: 리다이렉트 폐기, **index.html을 fetch해 글별 OG만 주입하고 그대로 서빙** → `/post/N` 깔끔주소 유지 + 크롤러 OG 유지(셸 못받으면 해시 리다이렉트 폴백). ④ `vercel.json`: `/(news|blog|story|curriculum)`→`/index.html` rewrite(직접접속·새로고침 404 방지; `/post/:id`는 함수). 라이브 검증: 전 경로 200, `/post/1` 함수서빙(전체 SPA+OG·폰트 정상), 앱내 이동 주소 클린, 뒤로가기 popstate·레거시 `/#/post/1`→`/post/1` 자동정리 모두 정상. (탭 제목 미갱신 잔여건은 아래 항목에서 해소) (2026-06-29)
 - [x] **화면 전환 시 탭 제목(`document.title`) 갱신** — App에 `[view, posts]` 의존 effect 추가: 글=글제목, Story(news/blog)="Story", 커리큘럼, 홈=기본. 단 **글 로딩 중(아직 못 찾음)엔 함수가 주입한 글 제목을 덮지 않도록 early-return**(초기 진입 시 기본값으로 깜빡이던 문제 수정). 라이브 검증: 홈/글/목록 이동마다 탭 제목 정상 갱신(글→목록 시 "Story | 언러닝컴퍼니"). (2026-06-29)
+- [x] **헤더 메뉴 앵커 스크롤 위치 보정 (Work·About)** — 메뉴 클릭 시 섹션 라벨/제목이 고정 헤더(69px)에 반쯤 가리던 문제. `section[id] { scroll-margin-top }` 추가. 섹션 자체 상단 패딩(56~64px)이 더해지는 점을 측정 반영해 처음 90px→**24px**로 낮춤(90이면 라벨이 헤더 아래 77px로 과도하게 내려가 한 화면 노출량↓·이탈 우려). 결과: Work 라벨 화면상 81px(헤더 바로 아래 12px)·About 정상, 가림 없음+윗 공백 최소. (2026-06-29)
 
 ---
 
