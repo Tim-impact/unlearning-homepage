@@ -3,7 +3,7 @@
 > 진행 상황 현장 일지. 큰 방향(설계도)은 `plan.md`에서 관리한다(아직 미작성).
 > 작업 진행에 따라 자주 갱신한다.
 
-**마지막 업데이트:** 2026-06-29 (Google Analytics GA4 설치(G-XNQN0BVT92) — CSP 허용·SPA 전환 포함 page_view 발신 라이브 검증 완료)
+**마지막 업데이트:** 2026-06-29 (보안 점검(게시판 쓰기 보호 확인·심각위험 없음) + 게시글 SEO/GEO 강화(본문 주입·JSON-LD·글별 설명·동적 sitemap) + 보안 하드닝(링크 검증·CSP connect-src). 배포·검증 완료)
 
 ---
 
@@ -65,12 +65,15 @@
 - [x] **헤더 메뉴 앵커 스크롤 위치 보정 (Work·About)** — 메뉴 클릭 시 섹션 라벨/제목이 고정 헤더(69px)에 반쯤 가리던 문제. `section[id] { scroll-margin-top }` 추가. 섹션 자체 상단 패딩(56~64px)이 더해지는 점을 측정 반영해 처음 90px→**24px**로 낮춤(90이면 라벨이 헤더 아래 77px로 과도하게 내려가 한 화면 노출량↓·이탈 우려). 결과: Work 라벨 화면상 81px(헤더 바로 아래 12px)·About 정상, 가림 없음+윗 공백 최소. (2026-06-29)
 - [x] **게시글 본문 끝 공유 아이콘 추가 (다 읽고 공유 넛징)** — `ShareButton`에 `style` prop 추가(헤더 사용처는 `marginLeft:auto` 명시 전달로 우측정렬 유지). 본문 끝 hr 앞에 "이 글이 도움이 되었다면 떠오르는 동료에게 공유해 주세요" 문구 + 공유 아이콘 중앙 배치(상단/하단 2곳). 검증: 공유 버튼 2개, 상단 우측정렬 유지, 하단 넛징 정상. (2026-06-29)
 - [x] **Google Analytics(GA4) 설치** — 측정 ID `G-XNQN0BVT92`. `index.html <head>`에 gtag.js 스니펫 추가, `vercel.json` CSP `script-src`에 `https://www.googletagmanager.com` 허용(미허용 시 차단됨; connect-src·img-src는 `https:` 전체 허용이라 추가 불필요). OG 함수가 index.html을 서빙하므로 `/post/N`에도 자동 포함. 라이브 검증(Playwright 네트워크): `gtag/js` 200, `g/collect en=page_view` 204 발신, **SPA 화면 전환(홈→/news pushState)에도 새 page_view 자동 발신**(GA4 향상된 측정 동작), 콘솔 0. (2026-06-29)
+- [x] **보안 점검 + 게시판 보안 검증** — 게시판(Sanity) 추가 관련 집중 점검. **결과: 심각 위험 없음.** ✅ Sanity 데이터셋 **쓰기 보호 확인**(비인증 create → 403 insufficient permissions; 읽기만 공개), 클라이언트·함수·설정에 **시크릿 노출 없음**(.env 미커밋), XSS 차단(React 이스케이프·함수 출력 `esc()`·raw HTML 주입 경로 없음), 보안 헤더(CSP·HSTS·X-Frame-Options 등) 구비. 권고사항은 아래 항목에서 조치. (2026-06-29)
+- [x] **게시글 SEO/GEO 강화** — ① **크롤러용 본문 주입**: `api/post.js`가 `/post/N`에 `<noscript>` 본문 + BlogPosting JSON-LD(headline·datePublished·image·author·`articleBody`) 주입 → JS 미실행 크롤러·AI봇도 본문/구조화데이터 읽음(기존엔 본문이 JS 렌더라 비가시였음). ② **글별 메타 설명**: og/meta description을 통일 서브카피 → **본문 요약**으로 교체(중복 설명 해소). ③ **동적 sitemap**: `api/sitemap.js` 신설(정적 페이지 + 전체 `/post/N` 포함), 정적 `sitemap.xml` 제거 후 `/sitemap.xml`→함수 rewrite. 라이브 검증: `/post/1`에 본문·JSON-LD·글별 설명 확인, `/sitemap.xml`에 글 포함, 사람 화면 정상(중복·에러 0). (2026-06-29)
+- [x] **보안 권고 조치(하드닝)** — ① PortableText 링크 스킴 검증(`http(s)`·`mailto`만 anchor, `javascript:` 등 차단). ② CSP `connect-src` `'self' https:`(전체 허용) → **Sanity·GA·Web3Forms 도메인만 화이트리스트**. ③ 함수 GROQ 입력에서 따옴표·역슬래시 제거(쿼리 인젝션 방지). 라이브 검증: 강화 후에도 Sanity 데이터 200·GA 204·이미지 200 정상, CSP 차단 0. (남은 권고: CSP `'unsafe-eval'`은 Babel standalone 필요로 유지 — 추후 빌드 도입 시 제거 가능) (2026-06-29)
 
 ---
 
 ## 현재 진행 중
 
-- (없음) — 본문 끝 공유 넛징 + GA4 설치까지 완료
+- (없음) — 보안 점검·게시글 SEO/GEO 강화·보안 하드닝까지 완료
 
 ---
 
