@@ -71,6 +71,8 @@
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
+    /* 고정 헤더(약 69px)가 섹션 제목을 가리지 않도록 앵커 스크롤 여백 */
+    section[id] { scroll-margin-top: 90px; }
     html, body {
       overflow-x: hidden;
       font-family: 'Pretendard', sans-serif;
