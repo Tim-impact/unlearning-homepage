@@ -71,8 +71,8 @@
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
-    /* 고정 헤더(약 69px)가 섹션 제목을 가리지 않도록 앵커 스크롤 여백 */
-    section[id] { scroll-margin-top: 90px; }
+    /* 고정 헤더(69px)에 섹션 라벨이 가리지 않을 만큼만 여백 (섹션 자체 상단 패딩 56~64px가 더해짐) */
+    section[id] { scroll-margin-top: 24px; }
     html, body {
       overflow-x: hidden;
       font-family: 'Pretendard', sans-serif;
